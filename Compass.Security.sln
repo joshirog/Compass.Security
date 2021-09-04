@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D2B5E9FF-49B0-4558-8335-25010FA8A870}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B3EC3427-7681-488A-8C2F-CB55896FC0F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{B0B8FCE7-A719-4D97-A770-C13E8E460CDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass.Security.Infrastructure", "Compass.Security.Infrastructure\Compass.Security.Infrastructure.csproj", "{94E22346-3927-458F-81EE-54D23E47A322}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass.Security.Domain", "Compass.Security.Domain\Compass.Security.Domain.csproj", "{30FD9209-CDFE-4DD6-BB6C-27BF93261B73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass.Security.Application", "Compass.Security.Application\Compass.Security.Application.csproj", "{D283EBDB-24B0-4301-BF2E-8B6FF812A08D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass.Security.Web", "Compass.Security.Web\Compass.Security.Web.csproj", "{C93FCF39-4A00-4E74-9989-E9B25A3F255D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{94E22346-3927-458F-81EE-54D23E47A322} = {D2B5E9FF-49B0-4558-8335-25010FA8A870}
+		{30FD9209-CDFE-4DD6-BB6C-27BF93261B73} = {D2B5E9FF-49B0-4558-8335-25010FA8A870}
+		{D283EBDB-24B0-4301-BF2E-8B6FF812A08D} = {D2B5E9FF-49B0-4558-8335-25010FA8A870}
+		{C93FCF39-4A00-4E74-9989-E9B25A3F255D} = {D2B5E9FF-49B0-4558-8335-25010FA8A870}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94E22346-3927-458F-81EE-54D23E47A322}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94E22346-3927-458F-81EE-54D23E47A322}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94E22346-3927-458F-81EE-54D23E47A322}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94E22346-3927-458F-81EE-54D23E47A322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30FD9209-CDFE-4DD6-BB6C-27BF93261B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30FD9209-CDFE-4DD6-BB6C-27BF93261B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30FD9209-CDFE-4DD6-BB6C-27BF93261B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30FD9209-CDFE-4DD6-BB6C-27BF93261B73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D283EBDB-24B0-4301-BF2E-8B6FF812A08D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D283EBDB-24B0-4301-BF2E-8B6FF812A08D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D283EBDB-24B0-4301-BF2E-8B6FF812A08D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D283EBDB-24B0-4301-BF2E-8B6FF812A08D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C93FCF39-4A00-4E74-9989-E9B25A3F255D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C93FCF39-4A00-4E74-9989-E9B25A3F255D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C93FCF39-4A00-4E74-9989-E9B25A3F255D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C93FCF39-4A00-4E74-9989-E9B25A3F255D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
