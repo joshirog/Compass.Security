@@ -5,6 +5,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B3EC3427-7681-488A-8C2F-CB55896FC0F4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{B0B8FCE7-A719-4D97-A770-C13E8E460CDE}"
+ProjectSection(SolutionItems) = preProject
+	Dockerfile = Dockerfile
+	readme.md = readme.md
+	releases.md = releases.md
+	roadmap.md = roadmap.md
+EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass.Security.Infrastructure", "Compass.Security.Infrastructure\Compass.Security.Infrastructure.csproj", "{94E22346-3927-458F-81EE-54D23E47A322}"
 EndProject
