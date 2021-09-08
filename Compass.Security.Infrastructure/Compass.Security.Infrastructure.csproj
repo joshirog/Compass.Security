@@ -15,7 +15,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Compass.Security.Application\Compass.Security.Application.csproj" />
       <ProjectReference Include="..\Compass.Security.Domain\Compass.Security.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\Externals" />
     </ItemGroup>
 
 </Project>

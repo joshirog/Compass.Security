@@ -5,4 +5,8 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Compass.Security.Infrastructure\Compass.Security.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
