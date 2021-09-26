@@ -17,14 +17,7 @@ namespace Compass.Security.Application.Commons.Constants
 
             Console.WriteLine($"Environment : {environment}");
 
-            if (environment is Development)
-            {
-                ConnectionString = configuration.GetConnectionString("DbConnection");
-            }
-            else
-            {
-                ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-            }
+            ConnectionString = environment is Development ? configuration.GetConnectionString("DbConnection") : Environment.GetEnvironmentVariable("DB_CONNECTION");
 
             Console.WriteLine($"ConnectionString : {ConnectionString}");
         }
