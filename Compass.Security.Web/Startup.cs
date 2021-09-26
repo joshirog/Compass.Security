@@ -18,7 +18,8 @@ namespace Compass.Security.Web
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
 
             services.AddConnectionExtension();
 
@@ -54,7 +55,7 @@ namespace Compass.Security.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=SignIn}/{id?}");
             });
         }
     }

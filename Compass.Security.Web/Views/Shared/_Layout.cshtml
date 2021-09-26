@@ -1,48 +1,75 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Compass.Security.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css"/>
-</head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Compass.Security.Web</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
+<html lang="en" class="h-100">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>@ViewData["Title"] - Compass</title>
+      <link rel="shortcut icon" href="~/favicon.ico">
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="~/vendor/icon-set/style.css">
+      <link rel="stylesheet" href="~/vendor/select2/dist/css/select2.min.css">
+      <link rel="stylesheet" href="~/css/theme.min.css">
+   </head>
+   <body class="d-flex align-items-center min-h-100">
+      <main id="content" role="main" class="main pt-0">
+         <div class="container-fluid px-3">
+            <div class="row">
+               <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center min-vh-lg-100 position-relative bg-light px-0">
+                  <div class="position-absolute top-0 left-0 right-0 mt-3 mx-3">
+                     <div class="d-none d-lg-flex justify-content-between">
+                        <a asp-action="SignIn" asp-controller="Account"></a>
+                     </div>
+                  </div>
+                  <div style="max-width: 23rem;">
+                     <div class="text-center mb-5">
+                        <img class="img-fluid" src="~/svg/illustrations/chat.svg" alt="Image Description" style="width: 12rem;">
+                     </div>
+                     <div class="mb-5">
+                        <h2 class="display-4">Build digital products with:</h2>
+                     </div>
+                     <ul class="list-checked list-checked-lg list-checked-primary list-unstyled-py-4">
+                        <li class="list-checked-item">
+                           <span class="d-block font-weight-bold mb-1">All-in-one tool</span>
+                           Build, run, and scale your apps - end to end
+                        </li>
+                        <li class="list-checked-item">
+                           <span class="d-block font-weight-bold mb-1">Easily add &amp; manage your services</span>
+                           It brings together your tasks, projects, timelines, files and more
+                        </li>
+                     </ul>
+                     <div class="row justify-content-between mt-5 gx-2">
+                        <div class="col">
+                           <img class="img-fluid" src="~/svg/brands/gitlab-gray.svg" alt="Image Description">
+                        </div>
+                        <div class="col">
+                           <img class="img-fluid" src="~/svg/brands/fitbit-gray.svg" alt="Image Description">
+                        </div>
+                        <div class="col">
+                           <img class="img-fluid" src="~/svg/brands/flow-xo-gray.svg" alt="Image Description">
+                        </div>
+                        <div class="col">
+                           <img class="img-fluid" src="~/svg/brands/layar-gray.svg" alt="Image Description">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-6 d-flex justify-content-center align-items-center min-vh-lg-100">
+                  <div class="w-100 pt-10 pt-lg-7 pb-7" style="max-width: 25rem;">
+                     @RenderBody()
+                  </div>
+               </div>
             </div>
-        </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2021 - Compass.Security.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
-</body>
+         </div>
+      </main>
+   
+      <script src="~/vendor/jquery/dist/jquery.min.js"></script>
+      <script src="~/vendor/jquery-migrate/dist/jquery-migrate.min.js"></script>
+      <script src="~/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="~/vendor/hs-toggle-password/dist/js/hs-toggle-password.js"></script>
+      <script src="~/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+      <script src="~/vendor/select2/dist/js/select2.full.min.js"></script>
+      <script src="~/js/theme.min.js"></script>
+      <script src="~/js/site.js" asp-append-version="true"></script>
+      @await RenderSectionAsync("Scripts", required: false)
+   </body>
 </html>
