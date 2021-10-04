@@ -59,6 +59,24 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "blacklists",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    type = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    status = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    created_by = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    updated_by = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_blacklists", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "roles",
                 columns: table => new
                 {
@@ -273,6 +291,11 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "blacklists",
+                columns: new[] { "id", "created_at", "created_by", "status", "type", "updated_at", "updated_by", "Value" },
+                values: new object[] { new Guid("723bc55b-d08e-45a0-b815-ae7b8afb5224"), new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "migrations", "Active", "Password", null, null, "12345678" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_application_authorizations_application_id_status_subject_ty~",
                 table: "application_authorizations",
@@ -351,6 +374,9 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
 
             migrationBuilder.DropTable(
                 name: "application_tokens");
+
+            migrationBuilder.DropTable(
+                name: "blacklists");
 
             migrationBuilder.DropTable(
                 name: "role_claims");

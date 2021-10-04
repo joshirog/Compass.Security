@@ -16,32 +16,38 @@ namespace Compass.Security.Infrastructure.Persistences.Seeders
 
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
-            if (await userManager.FindByNameAsync("admin@monkey.com") is null)
+            if (await userManager.FindByNameAsync("admin@monkey.com") is not null) 
+                return;
+            
+            var user = new User()
             {
-                var user = new User()
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "admin@monkey.com",
-                    Email = "admin@monkey.com",
-                    EmailConfirmed = true,
-                    PhoneNumber = "987654321",
-                    Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active),
-                    TwoFactorEnabled = false
-                };
+                Id = Guid.NewGuid(),
+                UserName = "admin@compass.com",
+                Email = "admin@compass.com",
+                EmailConfirmed = true,
+                PhoneNumber = "987654321",
+                Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active),
+                TwoFactorEnabled = false
+            };
 
-                await userManager.CreateAsync(user, "Admin2021$$");
+            await userManager.CreateAsync(user, "Admin2021$$");
 
-                if (await roleManager.FindByNameAsync(Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator)) is null)
-                {
-                    await roleManager.CreateAsync(new Role()
-                    {
-                        Name = Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator),
-                        Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
-                    });
+            if (await roleManager.FindByNameAsync(Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator)) is not null)
+                return;
+            
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator),
+                Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
+            });
+            
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Enum.GetName(typeof(RoleEnum), RoleEnum.Guest),
+                Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
+            });
 
-                    await userManager.AddToRoleAsync(user, Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator));
-                }
-            }
+            await userManager.AddToRoleAsync(user, Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator));
         }
     }
 }

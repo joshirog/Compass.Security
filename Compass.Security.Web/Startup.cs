@@ -1,6 +1,10 @@
-using Compass.Security.Infrastructure.Commons.Extensions;
+using Compass.Security.Application;
+using Compass.Security.Infrastructure;
+using Compass.Security.Web.Commons.Filters;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,16 +22,14 @@ namespace Compass.Security.Web
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
+            services.AddControllersWithViews(options =>
+                    options.Filters.Add<ValidationFilter>())
+                .AddFluentValidation()
                 .AddRazorRuntimeCompilation();
 
-            services.AddConnectionExtension();
-
-            services.AddIdentityExtension();
-
-            services.AddInjectionExtension();
-
-            services.AddTaskExtension();
+            services.AddInfrastructure();
+            
+            services.AddApplication();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,6 +37,7 @@ namespace Compass.Security.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseHttpsRedirection();
             }
             else
             {
@@ -42,8 +45,15 @@ namespace Compass.Security.Web
 
                 app.UseHsts();
             }
-
-            app.UseHttpsRedirection();
+            
+            var options = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+            app.UseForwardedHeaders(options);
             
             app.UseStaticFiles();
 

@@ -28,7 +28,7 @@ namespace Compass.Security.Web.Controllers.Web
             return response.Success switch
             {
                 true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
-                true => RedirectToAction("Index", "Home"),
+                true => RedirectToAction("Verification"),
                 _ => View(command)
             };
         }

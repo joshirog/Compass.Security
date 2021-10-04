@@ -21,6 +21,8 @@ namespace Compass.Security.Infrastructure.Persistences.Contexts
             _loggerFactory = loggerFactory;
             _dateTimeService = dateTimeService;
         }
+        
+        public DbSet<Blacklist> Blacklists { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {
@@ -51,8 +53,9 @@ namespace Compass.Security.Infrastructure.Persistences.Contexts
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
+            
             builder.HasPostgresExtension("uuid-ossp");
+            
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 

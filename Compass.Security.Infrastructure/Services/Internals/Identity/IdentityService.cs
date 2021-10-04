@@ -23,10 +23,10 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
 
         public async Task<(bool, User)> SignUp(User user, string password, IEnumerable<Claim> claims)
         {
-            using var transaction  = new TransactionScope();
-                
-            var identityResult = await _userManager.CreateAsync(user, password);
+            using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
+            var identityResult = await _userManager.CreateAsync(user, password);
+            
             if (!identityResult.Succeeded)
                 throw new ErrorInvalidException(identityResult.Errors?.Select(x => x.Description));
 
@@ -39,9 +39,9 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
 
             if (!identityResult.Succeeded)
                 throw new ErrorInvalidException(identityResult.Errors?.Select(x => x.Description));
-                    
+                
             transaction.Complete();
-
+                
             return (identityResult.Succeeded, user);
         }
     }
