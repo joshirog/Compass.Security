@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Compass.Security.Application.Commons.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
 {
@@ -14,5 +16,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
         public string Captcha { get; set; }
 
         public string ReturnUrl { get; set; }
+        
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }  
     }
 }

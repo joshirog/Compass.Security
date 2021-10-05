@@ -36,6 +36,7 @@ namespace Compass.Security.Application.Commons.Constants
         #endregion
 
         #region SendInBlue
+        public static string SendInBlueEndpoint { get; set; }
         public static string SendInBlueApiKey { get; set; }
         #endregion
         
@@ -63,6 +64,7 @@ namespace Compass.Security.Application.Commons.Constants
             if (environment is Development)
             {
                 ConnectionString = configuration.GetConnectionString("DbConnection");
+                SendInBlueEndpoint = configuration.GetSection("SendInBlue:Endpoint").Value;
                 SendInBlueApiKey = configuration.GetSection("SendInBlue:ApiKey").Value;
                 FirebaseStorageApiKey = configuration.GetSection("Firebase:Storage:ApiKey").Value;
                 FirebaseStorageBucket = configuration.GetSection("Firebase:Storage:Bucket").Value;
@@ -73,7 +75,7 @@ namespace Compass.Security.Application.Commons.Constants
                 TemplateReset = configuration.GetSection("Templates:Reset").Value;
                 TemplatePassword = configuration.GetSection("Templates:Password").Value;
                 TemplateOtp = configuration.GetSection("Templates:Otp").Value;
-                GoogleCaptchaUrl = configuration.GetSection("GoogleCaptcha:Url").Value;
+                GoogleCaptchaUrl = configuration.GetSection("GoogleCaptcha:Endpoint").Value;
                 GoogleCaptchaKey = configuration.GetSection("GoogleCaptcha:Key").Value;
                 GoogleCaptchaSecret = configuration.GetSection("GoogleCaptcha:Secret").Value;
                 GoogleAuthKey = configuration.GetSection("oAuth:Google:Key").Value;
@@ -90,6 +92,7 @@ namespace Compass.Security.Application.Commons.Constants
             else
             {
                 ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+                SendInBlueEndpoint = configuration.GetSection("SENDINBLUE_ENDPOINT").Value;
                 SendInBlueApiKey = Environment.GetEnvironmentVariable("SENDINBLUE_APIKEY");
                 FirebaseStorageApiKey = Environment.GetEnvironmentVariable("FI_STORAGE_APIKEY");
                 FirebaseStorageBucket = Environment.GetEnvironmentVariable("FI_STORAGE_BUCKET");
@@ -100,7 +103,7 @@ namespace Compass.Security.Application.Commons.Constants
                 TemplateReset = Environment.GetEnvironmentVariable("TEMPLATE_RESET");
                 TemplatePassword = Environment.GetEnvironmentVariable("TEMPLATE_PASSWORD");
                 TemplateOtp = Environment.GetEnvironmentVariable("TEMPLATE_OTP");
-                GoogleCaptchaUrl = Environment.GetEnvironmentVariable("G_CAPTCHA_URL");
+                GoogleCaptchaUrl = Environment.GetEnvironmentVariable("G_CAPTCHA_ENDPOINT");
                 GoogleCaptchaKey = Environment.GetEnvironmentVariable("G_CAPTCHA_KEY");
                 GoogleCaptchaSecret = Environment.GetEnvironmentVariable("G_CAPTCHA_SECRET");
                 GoogleAuthKey = Environment.GetEnvironmentVariable("G_OAUTH_KEY");

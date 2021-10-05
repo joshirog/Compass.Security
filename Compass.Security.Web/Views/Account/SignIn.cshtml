@@ -5,19 +5,25 @@
     ViewBag.Title = "Sign In";
 }
 
-<form id="loginForm" class="js-validate" method="post" asp-controller="Account" asp-action="SignIn">
+<form method="post" asp-controller="Account" asp-action="ExternalLogin">
     <div class="text-center mb-5">
         <h1 class="display-4">Sign in</h1>
         <p>Don't have an account yet? <a asp-action="SignUp" asp-controller="Account">Sign up here</a></p>
     </div>
     <div class="mb-4">
-        <a class="btn btn-lg btn-white btn-block" href="#">
-            <span class="d-flex justify-content-center align-items-center">
-                <img class="avatar avatar-xss mr-2" src="~/svg/brands/google.svg" alt="Image Description">
-                Sign up with Google
-            </span>
-        </a>
+        @foreach (var scheme in Model.ExternalLogins)
+        {
+            <button class="btn btn-lg btn-white btn-block" type="submit" name="provider" value="@scheme.Name">
+                <span class="d-flex justify-content-center align-items-center">
+                    <img class="avatar avatar-xss mr-2" src="~/svg/brands/google.svg" alt="Image Description">
+                    Sign in with @scheme.DisplayName
+                </span>
+            </button>
+        }
     </div>
+</form>
+
+<form id="loginForm" class="js-validate" method="post" asp-controller="Account" asp-action="SignIn">
     <div class="text-center mb-4">
         <span class="divider text-muted">OR</span>
     </div>

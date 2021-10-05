@@ -4,10 +4,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Transactions;
+using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Interfaces;
 using Compass.Security.Domain.Commons.Enums;
 using Compass.Security.Domain.Entities;
 using Compass.Security.Domain.Exceptions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
 namespace Compass.Security.Infrastructure.Services.Internals.Identity
@@ -50,6 +52,93 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             await _userManager.ResetAccessFailedCountAsync(user);
                 
             return (result.Succeeded, user);
+        }
+        
+        public async Task<List<AuthenticationScheme>> Schemes()
+        {
+            return (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        }
+        
+        public AuthenticationProperties Properties(string provider, string redirectUrl)
+        {
+            return _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+        }
+        
+        public async Task<bool> CallBack()
+        {
+             var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            if (info == null)
+            {
+                throw new ErrorInvalidException(new []{ "Oops, an error occurred in the communication with the external provider, please try it in a few minutes." });
+            }
+
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
+
+            if (signInResult.Succeeded)
+            {
+                return signInResult.Succeeded;
+            }
+            
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var identifier = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (email is null && identifier is null)
+            {
+                throw new ErrorInvalidException(new []{ "Oops, an error occurred in the communication with the external provider, please try it in a few minutes." });
+            }
+
+            User user;
+            var isCreated = false;
+            
+            if (email is not null)
+            {
+                user = await _userManager.FindByEmailAsync(email);
+                
+                if (user is null)
+                {
+                    isCreated = true;
+                    user = new User
+                    {
+                        UserName = email,
+                        Email = email,
+                        EmailConfirmed = true
+                    };
+                }
+            }
+            else
+            {
+                user = await _userManager.FindByNameAsync(identifier);
+            
+                if (user is null)
+                {
+                    isCreated = true;
+                    user = new User
+                    {
+                        UserName = identifier,
+                        EmailConfirmed = true
+                    };
+                }
+            }
+
+            if (isCreated)
+            {
+                await _userManager.CreateAsync(user);
+                    
+                await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(RoleEnum), RoleEnum.Guest));
+            
+                await _userManager.AddClaimsAsync(user, new List<Claim>
+                {
+                    new("FullName", "", ClaimValueTypes.String),
+                    new("Avatar", ConfigurationConstant.Avatar, ClaimValueTypes.String)
+                });
+            }
+
+            var identity = await _userManager.AddLoginAsync(user, info);
+            
+            await _signInManager.SignInAsync(user, false);
+            
+            return identity.Succeeded;
         }
 
         public async Task<(bool, User)> SignUp(User user, string password, IEnumerable<Claim> claims)

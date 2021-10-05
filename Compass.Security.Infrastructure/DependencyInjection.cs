@@ -12,6 +12,15 @@ namespace Compass.Security.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
+            services.AddConnectionExtension();
+            services.AddIdentityExtension();
+            services.AddOpenIddictExtension();
+            services.AddCacheExtension();
+            services.AddTaskExtension();
+            services.AddHttpClientExtension();
+            services.AddAccessorExtension();
+            services.AddOAuthExtension();
+            
             services.AddTransient<IDateTimeService, DateTimeService>();
             
             services.AddScoped<IBlacklistRepository, BlacklistRepository>();
@@ -19,12 +28,6 @@ namespace Compass.Security.Infrastructure
             services.AddScoped<IIdentityService, IdentityService>();
             
             services.AddScoped<ICaptchaService, GoogleCaptchaService>();
-            
-            services.AddConnectionExtension();
-            
-            services.AddIdentityExtension();
-
-            services.AddTaskExtension();
             
             return services;
         }

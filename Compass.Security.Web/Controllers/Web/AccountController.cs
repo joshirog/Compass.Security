@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
+using Compass.Security.Application.Services.Accounts.Commands.External;
 using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
+using Compass.Security.Application.Services.Accounts.Queries.Scheme;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +11,23 @@ namespace Compass.Security.Web.Controllers.Web
 {
     public class AccountController : BaseWebController
     {
-        public IActionResult SignIn(string returnUrl)
+        public async Task<IActionResult> SignIn(string returnUrl)
         {
-            return View();
+            if (User.Identity is not {IsAuthenticated: true})
+            {
+                var response = await Mediator.Send(new SchemeQuery());
+                
+                return View(new SignInCommand
+                {
+                    ReturnUrl = returnUrl,
+                    ExternalLogins = response.Data
+                });
+            }
+            
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+                
+            return RedirectToAction("Index", "Home");
         }
         
         [HttpPost]
@@ -26,6 +42,37 @@ namespace Compass.Security.Web.Controllers.Web
                 true => RedirectToAction("Index", "Home"),
                 _ => View(command)
             };
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl)
+        {
+            var response = await Mediator.Send(new ExternalCommand {Provider = provider, ReturnUrl = returnUrl});
+
+            return new ChallengeResult(provider, response.Data);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            var response = await Mediator.Send(new CallbackCommand { ReturnUrl = returnUrl, RemoteError = remoteError });
+
+            if (!response.Success)
+            {
+                TempData["message"] = response.Message;
+                
+                return View("SignIn", new SignInCommand
+                {
+                    ReturnUrl = returnUrl,
+                    ExternalLogins = (await Mediator.Send(new SchemeQuery())).Data
+                });
+            }
+
+            if(string.IsNullOrEmpty(returnUrl))
+                return RedirectToAction("Index", "Home");
+                
+            return LocalRedirect(returnUrl);
         }
         
         public IActionResult SignUp()
