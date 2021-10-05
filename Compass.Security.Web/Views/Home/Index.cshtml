@@ -1,16 +1,18 @@
 @{
-    
+    ViewBag.Title = "Home";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+<div class="row">
+    <div class="text-center">
+        <ul class="list-group">
+            @foreach(var claim in User.Claims) 
+            {
+                <li class="list-group-item"><strong>@claim.Type</strong> : @claim.Value </li>
+            }
+        </ul>
+                                
+        <form id="loginForm" method="post" asp-controller="Account" asp-action="SignOut">
+            <button class="btn btn-primary shadow-none my-2" type="submit">Sign out</button>
+        </form>
+    </div>
 </div>
-</body>
-</html>

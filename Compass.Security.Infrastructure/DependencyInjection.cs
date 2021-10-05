@@ -2,6 +2,7 @@ using Compass.Security.Application.Commons.Interfaces;
 using Compass.Security.Infrastructure.Commons.Extensions;
 using Compass.Security.Infrastructure.Persistences.Repositories;
 using Compass.Security.Infrastructure.Services;
+using Compass.Security.Infrastructure.Services.Externals.Google;
 using Compass.Security.Infrastructure.Services.Internals.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,8 @@ namespace Compass.Security.Infrastructure
             services.AddScoped<IBlacklistRepository, BlacklistRepository>();
             
             services.AddScoped<IIdentityService, IdentityService>();
+            
+            services.AddScoped<ICaptchaService, GoogleCaptchaService>();
             
             services.AddConnectionExtension();
             

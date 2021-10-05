@@ -4,7 +4,7 @@
     ViewBag.Title = "Sign Up";
 }
 
-<form class="js-validate" asp-controller="Account" asp-action="SignUp">
+<form class="js-validate" method="post" asp-controller="Account" asp-action="SignUp">
    <div class="text-center mb-5">
       <h1 class="display-4">Create your account</h1>
       <p>Already have an account? <a asp-action="SignIn" asp-controller="Account">Sign in here</a></p>
@@ -24,7 +24,7 @@
    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
    <input type="hidden" asp-for="ReturnUrl"/>
    
-   <label class="input-label" for="fullNameSrEmail">Full name</label>
+   <label class="input-label">Full name</label>
    <!-- Form Group -->
    <div class="form-row">
       <div class="col-sm-6">
@@ -53,7 +53,7 @@
    <!-- End Form Group -->
    <!-- Form Group -->
    <div class="js-form-message form-group">
-      <label class="input-label" for="signupSrEmail">Your email</label>
+      <label class="input-label">Your email</label>
       <input type="email" 
              class="form-control form-control-lg"
              asp-for="Email"
@@ -65,7 +65,7 @@
    <!-- End Form Group -->
    <!-- Form Group -->
    <div class="js-form-message form-group">
-      <label class="input-label" for="signupSrPassword">Password</label>
+      <label class="input-label">Password</label>
       <div class="input-group input-group-merge">
          <input type="password" 
                 class="js-toggle-password form-control form-control-lg"
@@ -89,7 +89,7 @@
    <!-- End Form Group -->
    <!-- Form Group -->
    <div class="js-form-message form-group">
-      <label class="input-label" for="signupSrConfirmPassword">Confirm password</label>
+      <label class="input-label">Confirm password</label>
       <div class="input-group input-group-merge">
          <input type="password" 
                 class="js-toggle-password form-control form-control-lg" 

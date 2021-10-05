@@ -1,7 +1,5 @@
 using Compass.Security.Application;
 using Compass.Security.Infrastructure;
-using Compass.Security.Web.Commons.Filters;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -22,14 +20,11 @@ namespace Compass.Security.Web
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(options =>
-                    options.Filters.Add<ValidationFilter>())
-                .AddFluentValidation()
-                .AddRazorRuntimeCompilation();
-
             services.AddInfrastructure();
             
             services.AddApplication();
+
+            services.AddPresentation();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,7 +37,6 @@ namespace Compass.Security.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-
                 app.UseHsts();
             }
             

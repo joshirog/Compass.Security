@@ -15,10 +15,41 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
     public class IdentityService : IIdentityService
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public IdentityService(UserManager<User> userManager)
+        public IdentityService(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
+        }
+        
+        public async Task<(bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed)
+        {
+            var result = await _signInManager.PasswordSignInAsync(username, password, isPersistent, isLockOnFailed);
+            
+            if (result.IsNotAllowed)
+            {
+                throw new ErrorInvalidException(new []{ "We sent a verification email to activate your account, please check your email." });
+            }
+
+            if (result.IsLockedOut)
+            {
+                throw new ErrorInvalidException(new []{ "It seems that you have exceeded the maximum number of attempts, please try again later." });
+            }
+            
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (result.RequiresTwoFactor)
+            {
+                return (result.RequiresTwoFactor, user);
+            }
+
+            if (!result.Succeeded)
+                throw new ErrorInvalidException(new[] { "Incorrect email or password, please check and try again." });
+            
+            await _userManager.ResetAccessFailedCountAsync(user);
+                
+            return (result.Succeeded, user);
         }
 
         public async Task<(bool, User)> SignUp(User user, string password, IEnumerable<Claim> claims)
@@ -43,6 +74,11 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             transaction.Complete();
                 
             return (identityResult.Succeeded, user);
+        }
+        
+        public async Task SignOut()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Compass.Security.Infrastructure.Commons.Extensions
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseNpgsql(SettingConstant.ConnectionString,
+                options.UseNpgsql(ConfigurationConstant.ConnectionString,
                     b => b.MigrationsAssembly(assembly)
                 ).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
