@@ -1,6 +1,6 @@
 namespace Compass.Security.Application.Commons.Constants
 {
-    public class ResponseConstant
+    public static class ResponseConstant
     {
         public const string MessageSuccess = "The operation was successful";
         
