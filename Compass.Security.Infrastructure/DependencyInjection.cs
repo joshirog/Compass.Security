@@ -3,7 +3,9 @@ using Compass.Security.Infrastructure.Commons.Extensions;
 using Compass.Security.Infrastructure.Persistences.Repositories;
 using Compass.Security.Infrastructure.Services;
 using Compass.Security.Infrastructure.Services.Externals.Google;
+using Compass.Security.Infrastructure.Services.Externals.SendInBlue;
 using Compass.Security.Infrastructure.Services.Internals.Identity;
+using Compass.Security.Infrastructure.Services.Internals.LazyCache;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Compass.Security.Infrastructure
@@ -22,13 +24,14 @@ namespace Compass.Security.Infrastructure
             services.AddOAuthExtension();
             
             services.AddTransient<IDateTimeService, DateTimeService>();
+            services.AddTransient<ICacheService, LazyCacheService>();
+            services.AddTransient<INotificationService, SendInBlueService>();
+            services.AddTransient<IStorageService, FirebaseStorageService>();
+            services.AddTransient<ICaptchaService, GoogleCaptchaService>();
+            services.AddTransient<IIdentityService, IdentityService>();
             
             services.AddScoped<IBlacklistRepository, BlacklistRepository>();
-            
-            services.AddScoped<IIdentityService, IdentityService>();
-            
-            services.AddScoped<ICaptchaService, GoogleCaptchaService>();
-            
+
             return services;
         }
     }

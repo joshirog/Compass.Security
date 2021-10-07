@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Compass.Security.Infrastructure.Services.Externals.SendInBlue
 {
-    public class SendInBlueService
+    public class SendInBlueService : INotificationService
     {
         private readonly ILogger<SendInBlueService> _logger;
         private readonly IDateTimeService _dateTimeService;
