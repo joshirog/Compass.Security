@@ -11,5 +11,6 @@ namespace Compass.Security.Application.Commons.Constants
         public const int SenderId = 1;
 
         public const string SubjectActivateAccount = "Activate account";
+        public const string SubjectWelcome = "Welcome";
     }
 }

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Compass.Security.Application.Services.Accounts.Commands.Confirm;
 using Compass.Security.Application.Services.Accounts.Commands.External;
 using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
@@ -98,6 +99,39 @@ namespace Compass.Security.Web.Controllers.Web
                 true => RedirectToAction("Verification"),
                 _ => View(command)
             };
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Confirm(string id, string token, string returnUrl)
+        {
+            var response = await Mediator.Send(new ConfirmCommand { UserId = id, Token = token });
+
+            if (!response.Success) 
+                return View(new ConfirmCommand { UserId = id, Token = token, ReturnUrl = returnUrl });
+
+            TempData["message"] = response.Message;
+            
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+                
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm(ConfirmCommand command)
+        {
+            var response = await Mediator.Send(command);
+
+            if (!response.Success) 
+                return View(command);
+
+            TempData["message"] = response.Message;
+            
+            if (!string.IsNullOrEmpty(command.ReturnUrl))
+                return Redirect(command.ReturnUrl);
+                
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Recovery()
