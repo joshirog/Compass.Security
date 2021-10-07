@@ -102,7 +102,8 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
                     {
                         UserName = email,
                         Email = email,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
                     };
                 }
             }
@@ -116,7 +117,8 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
                     user = new User
                     {
                         UserName = identifier,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
                     };
                 }
             }

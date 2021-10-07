@@ -19,14 +19,6 @@ namespace Compass.Security.Application.Commons.Constants
         #region oAuth
         public static string GoogleAuthKey { get; set; }
         public static string GoogleAuthSecret { get; set; }
-        public static string FacebookAuthKey { get; set; }
-        public static string FacebookAuthSecret { get; set; }
-        public static string TwitterAuthKey { get; set; }
-        public static string TwitterAuthSecret { get; set; }
-        public static string LinkedinAuthKey { get; set; }
-        public static string LinkedinAuthSecret { get; set; }
-        public static string MicrosoftAuthKey { get; set; }
-        public static string MicrosoftAuthSecret { get; set; }
         #endregion
         
         #region reCatpcha
@@ -80,14 +72,6 @@ namespace Compass.Security.Application.Commons.Constants
                 GoogleCaptchaSecret = configuration.GetSection("GoogleCaptcha:Secret").Value;
                 GoogleAuthKey = configuration.GetSection("oAuth:Google:Key").Value;
                 GoogleAuthSecret = configuration.GetSection("oAuth:Google:Secret").Value;
-                FacebookAuthKey = configuration.GetSection("oAuth:Facebook:Key").Value;
-                FacebookAuthSecret = configuration.GetSection("oAuth:Facebook:Secret").Value;
-                TwitterAuthKey = configuration.GetSection("oAuth:Twitter:Key").Value;
-                TwitterAuthSecret = configuration.GetSection("oAuth:Twitter:Secret").Value;
-                LinkedinAuthKey = configuration.GetSection("oAuth:Linkedin:Key").Value;
-                LinkedinAuthSecret = configuration.GetSection("oAuth:Linkedin:Secret").Value;
-                MicrosoftAuthKey = configuration.GetSection("oAuth:Microsoft:Key").Value;
-                MicrosoftAuthSecret = configuration.GetSection("oAuth:Microsoft:Secret").Value;
             }
             else
             {
@@ -108,14 +92,6 @@ namespace Compass.Security.Application.Commons.Constants
                 GoogleCaptchaSecret = Environment.GetEnvironmentVariable("G_CAPTCHA_SECRET");
                 GoogleAuthKey = Environment.GetEnvironmentVariable("G_OAUTH_KEY");
                 GoogleAuthSecret = Environment.GetEnvironmentVariable("G_OAUTH_SECRET");
-                FacebookAuthKey = Environment.GetEnvironmentVariable("F_OAUTH_KEY");
-                FacebookAuthSecret = Environment.GetEnvironmentVariable("F_OAUTH_SECRET");
-                TwitterAuthKey = Environment.GetEnvironmentVariable("T_OAUTH_KEY");
-                TwitterAuthSecret = Environment.GetEnvironmentVariable("T_OAUTH_SECRET");
-                LinkedinAuthKey =  Environment.GetEnvironmentVariable("L_OAUTH_KEY");
-                LinkedinAuthSecret = Environment.GetEnvironmentVariable("L_OAUTH_SECRET");
-                MicrosoftAuthKey =  Environment.GetEnvironmentVariable("M_OAUTH_KEY");
-                MicrosoftAuthSecret = Environment.GetEnvironmentVariable("M_OAUTH_SECRET");
             }
 
             Console.WriteLine($"ConnectionString : {ConnectionString}");
@@ -133,14 +109,6 @@ namespace Compass.Security.Application.Commons.Constants
             Console.WriteLine($"GoogleCaptchaSecret : {GoogleCaptchaSecret}");
             Console.WriteLine($"GoogleAuthKey : {GoogleAuthKey}");
             Console.WriteLine($"GoogleAuthSecret : {GoogleAuthSecret}");
-            Console.WriteLine($"FacebookAuthKey : {FacebookAuthKey}");
-            Console.WriteLine($"FacebookAuthSecret : {FacebookAuthSecret}");
-            Console.WriteLine($"TwitterAuthKey : {TwitterAuthKey}");
-            Console.WriteLine($"TwitterAuthSecret : {TwitterAuthSecret}");
-            Console.WriteLine($"LinkedinAuthKey : {LinkedinAuthKey}");
-            Console.WriteLine($"LinkedinAuthSecret : {LinkedinAuthSecret}");
-            Console.WriteLine($"MicrosoftAuthKey : {MicrosoftAuthKey}");
-            Console.WriteLine($"MicrosoftAuthSecret : {MicrosoftAuthSecret}");
         }
     }
 }

@@ -12,13 +12,13 @@ namespace Compass.Security.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
+            services.AddAccessorExtension();
             services.AddConnectionExtension();
             services.AddIdentityExtension();
             services.AddOpenIddictExtension();
             services.AddCacheExtension();
             services.AddTaskExtension();
             services.AddHttpClientExtension();
-            services.AddAccessorExtension();
             services.AddOAuthExtension();
             
             services.AddTransient<IDateTimeService, DateTimeService>();

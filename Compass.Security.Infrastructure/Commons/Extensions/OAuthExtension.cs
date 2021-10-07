@@ -1,5 +1,6 @@
 using Compass.Security.Application.Commons.Constants;
-using Compass.Security.Infrastructure.Commons.Constants;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Compass.Security.Infrastructure.Commons.Extensions
@@ -11,9 +12,10 @@ namespace Compass.Security.Infrastructure.Commons.Extensions
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = ConfigurationConstant.GoogleAuthKey;
-                    options.ClientSecret = ConfigurationConstant.GoogleAuthSecret;
-                })
+                    options.ClientId = "464766773458-pje0mmaigpndcjvkua948pp7a3k3f2hu.apps.googleusercontent.com";
+                    options.ClientSecret = "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";
+                });
+                /*
                 .AddFacebook(options =>
                 {
                     options.AppId = ConfigurationConstant.FacebookAuthKey;
@@ -36,6 +38,7 @@ namespace Compass.Security.Infrastructure.Commons.Extensions
                     options.ClientId = ConfigurationConstant.MicrosoftAuthKey;
                     options.ClientSecret = ConfigurationConstant.MicrosoftAuthSecret;
                 });
+                */
         }
     }
 }

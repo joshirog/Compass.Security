@@ -4,13 +4,23 @@ using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
 using Compass.Security.Application.Services.Accounts.Queries.Scheme;
+using Compass.Security.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Compass.Security.Web.Controllers.Web
 {
     public class AccountController : BaseWebController
     {
+
+        private readonly SignInManager<User> _signInManager;
+
+        public AccountController(SignInManager<User> signInManager)
+        {
+            _signInManager = signInManager;
+        }
+        
         public async Task<IActionResult> SignIn(string returnUrl)
         {
             if (User.Identity is not {IsAuthenticated: true})
@@ -44,16 +54,19 @@ namespace Compass.Security.Web.Controllers.Web
             };
         }
         
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLogin(string provider, string returnUrl)
         {
             var response = await Mediator.Send(new ExternalCommand {Provider = provider, ReturnUrl = returnUrl});
 
-            return new ChallengeResult(provider, response.Data);
+            var data = new ChallengeResult(provider, response.Data);
+            
+            return data;
         }
         
-        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
             var response = await Mediator.Send(new CallbackCommand { ReturnUrl = returnUrl, RemoteError = remoteError });
