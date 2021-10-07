@@ -4,23 +4,13 @@ using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
 using Compass.Security.Application.Services.Accounts.Queries.Scheme;
-using Compass.Security.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Compass.Security.Web.Controllers.Web
 {
     public class AccountController : BaseWebController
     {
-
-        private readonly SignInManager<User> _signInManager;
-
-        public AccountController(SignInManager<User> signInManager)
-        {
-            _signInManager = signInManager;
-        }
-        
         public async Task<IActionResult> SignIn(string returnUrl)
         {
             if (User.Identity is not {IsAuthenticated: true})

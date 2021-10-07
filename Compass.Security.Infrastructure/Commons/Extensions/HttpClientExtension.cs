@@ -13,7 +13,7 @@ namespace Compass.Security.Infrastructure.Commons.Extensions
         {
             services.AddHttpClient(SettingConstant.SendInBlue, c =>
             {
-                c.BaseAddress = new Uri(ConfigurationConstant.SendInBlueEndpoint);
+                c.BaseAddress = new Uri(EndpointConstant.SendInBlueEndpoint);
                 c.DefaultRequestHeaders.Connection.Add(SettingConstant.KeepAlive);
                 c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
                 c.DefaultRequestHeaders.Add(SettingConstant.ApiKey, ConfigurationConstant.SendInBlueApiKey);

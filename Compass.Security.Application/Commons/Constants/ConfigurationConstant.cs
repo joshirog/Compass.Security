@@ -28,7 +28,6 @@ namespace Compass.Security.Application.Commons.Constants
         #endregion
 
         #region SendInBlue
-        public static string SendInBlueEndpoint { get; set; }
         public static string SendInBlueApiKey { get; set; }
         #endregion
         
@@ -56,7 +55,6 @@ namespace Compass.Security.Application.Commons.Constants
             if (environment is Development)
             {
                 ConnectionString = configuration.GetConnectionString("DbConnection");
-                SendInBlueEndpoint = configuration.GetSection("SendInBlue:Endpoint").Value;
                 SendInBlueApiKey = configuration.GetSection("SendInBlue:ApiKey").Value;
                 FirebaseStorageApiKey = configuration.GetSection("Firebase:Storage:ApiKey").Value;
                 FirebaseStorageBucket = configuration.GetSection("Firebase:Storage:Bucket").Value;
@@ -76,7 +74,6 @@ namespace Compass.Security.Application.Commons.Constants
             else
             {
                 ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-                SendInBlueEndpoint = configuration.GetSection("SENDINBLUE_ENDPOINT").Value;
                 SendInBlueApiKey = Environment.GetEnvironmentVariable("SENDINBLUE_APIKEY");
                 FirebaseStorageApiKey = Environment.GetEnvironmentVariable("FI_STORAGE_APIKEY");
                 FirebaseStorageBucket = Environment.GetEnvironmentVariable("FI_STORAGE_BUCKET");
