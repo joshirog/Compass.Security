@@ -19,18 +19,18 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Confirm
     public class ConfirmNotificationHandler : INotificationHandler<ConfirmNotification>
     {
         private readonly ICacheService _cacheService;
-        private readonly INotificationService _notificationService;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUserRepository _userRepository;
         private readonly IIdentityService _identityService;
+        private readonly INotificationLogService _notificationLogService;
 
-        public ConfirmNotificationHandler(ICacheService cacheService, INotificationService notificationService, IHttpContextAccessor accessor, IUserRepository userRepository, IIdentityService identityService)
+        public ConfirmNotificationHandler(ICacheService cacheService, IHttpContextAccessor accessor, IUserRepository userRepository, IIdentityService identityService, INotificationLogService notificationLogService)
         {
             _cacheService = cacheService;
-            _notificationService = notificationService;
             _accessor = accessor;
             _userRepository = userRepository;
             _identityService = identityService;
+            _notificationLogService = notificationLogService;
         }
 
         public async Task Handle(ConfirmNotification notification, CancellationToken cancellationToken)
@@ -46,7 +46,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Confirm
             html = html.Replace("{0}", fullName);
             html = html.Replace("{1}", link);
             
-            await _notificationService.SendEmail(new EmailDto
+            await _notificationLogService.SendMailLog(user.Id, new EmailDto
             {
                 Sender = new SenderDto { Id = TemplateConstant.SenderId },
                 To = new List<ToDto> { new() { Name = fullName, Email = user.Email } },

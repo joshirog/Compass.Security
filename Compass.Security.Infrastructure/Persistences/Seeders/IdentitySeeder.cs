@@ -1,5 +1,5 @@
 using System;
-using Compass.Security.Domain.Commons.Enums;
+using Compass.Security.Domain.Enums;
 using Compass.Security.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

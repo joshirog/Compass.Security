@@ -23,16 +23,16 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
      public class SignUpNotificationHandler : INotificationHandler<SignUpNotification>
     {
         private readonly ICacheService _cacheService;
-        private readonly INotificationService _notificationService;
         private readonly IHttpContextAccessor _accessor;
         private readonly IIdentityService _identityService;
-
-        public SignUpNotificationHandler(ICacheService cacheService, INotificationService notificationService, IHttpContextAccessor accessor, IIdentityService identityService)
+        private readonly INotificationLogService _notificationLogService;
+        
+        public SignUpNotificationHandler(ICacheService cacheService, IHttpContextAccessor accessor, IIdentityService identityService, INotificationLogService notificationLogService)
         {
             _cacheService = cacheService;
-            _notificationService = notificationService;
             _accessor = accessor;
             _identityService = identityService;
+            _notificationLogService = notificationLogService;
         }
         
         public async Task Handle(SignUpNotification notification, CancellationToken cancellationToken)
@@ -54,8 +54,8 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
                 var html = _cacheService.Template(TemplateConstant.TemplateActivation);
                 html = html.Replace("{0}", fullName);
                 html = html.Replace("{1}", link);
-            
-                await _notificationService.SendEmail(new EmailDto
+
+                await _notificationLogService.SendMailLog(user.Id, new EmailDto
                 {
                     Sender = new SenderDto { Id = TemplateConstant.SenderId },
                     To = new List<ToDto> { new() { Name = fullName, Email = user.Email } },

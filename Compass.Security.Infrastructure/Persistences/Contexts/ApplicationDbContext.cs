@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Interfaces;
-using Compass.Security.Domain.Commons.Interfaces;
+using Compass.Security.Domain.Interfaces;
 using Compass.Security.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

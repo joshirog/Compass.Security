@@ -1,6 +1,6 @@
 using System;
 
-namespace Compass.Security.Domain.Commons.Interfaces
+namespace Compass.Security.Domain.Interfaces
 {
     public interface IBaseEntity
     {

@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
 using Compass.Security.Application.Services.Accounts.Commands.Confirm;
 using Compass.Security.Application.Services.Accounts.Commands.External;
+using Compass.Security.Application.Services.Accounts.Commands.Resend;
 using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
 using Compass.Security.Application.Services.Accounts.Queries.Scheme;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Compass.Security.Web.Controllers.Web
 {
@@ -96,18 +98,37 @@ namespace Compass.Security.Web.Controllers.Web
             return response.Success switch
             {
                 true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
-                true => RedirectToAction("Verification"),
+                true => RedirectToAction("Resend", new
+                {
+                    UserId = response.Data.UserId, 
+                    Email = response.Data.Email,
+                    ReturnUrl = command.ReturnUrl
+                }),
                 _ => View(command)
             };
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Confirm(string id, string token, string returnUrl)
+        public IActionResult Resend(string userId, string email, string returnUrl)
         {
-            var response = await Mediator.Send(new ConfirmCommand { UserId = id, Token = token });
+            return View(new ResendCommand { UserId = userId, Email = email, ReturnUrl = returnUrl });
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Resend(ResendCommand command)
+        {
+            await Mediator.Send(command);
+            
+            return View(command);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Confirm(string userId, string token, string returnUrl)
+        {
+            var response = await Mediator.Send(new ConfirmCommand { UserId = userId, Token = token });
 
             if (!response.Success) 
-                return View(new ConfirmCommand { UserId = id, Token = token, ReturnUrl = returnUrl });
+                return View(new ConfirmCommand { UserId = userId, Token = token, ReturnUrl = returnUrl });
 
             TempData["message"] = response.Message;
             
@@ -138,12 +159,7 @@ namespace Compass.Security.Web.Controllers.Web
         {
             return View();
         }
-        
-        public IActionResult Verification()
-        {
-            return View();
-        }
-        
+
         public IActionResult TwoStep()
         {
             return View();

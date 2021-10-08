@@ -1,5 +1,5 @@
 using System;
-using Compass.Security.Domain.Commons.Interfaces;
+using Compass.Security.Domain.Interfaces;
 using OpenIddict.EntityFrameworkCore.Models;
 
 namespace Compass.Security.Domain.Entities

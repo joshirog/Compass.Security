@@ -29,7 +29,11 @@ namespace Compass.Security.Infrastructure
             services.AddTransient<IStorageService, FirebaseStorageService>();
             services.AddTransient<ICaptchaService, GoogleCaptchaService>();
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<INotificationLogService, NotificationLogService>();
             
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserNotificationRepository, UserNotificationRepository>();
+            services.AddScoped<INotificationLogRepository, NotificationLogRepository>();
             services.AddScoped<IBlacklistRepository, BlacklistRepository>();
 
             return services;

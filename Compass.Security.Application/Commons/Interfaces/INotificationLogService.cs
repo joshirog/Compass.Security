@@ -1,10 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Dtos;
 
 namespace Compass.Security.Application.Commons.Interfaces
 {
-    public interface INotificationService
+    public interface INotificationLogService
     {
-        Task<string> SendEmail(EmailDto entity);
+        Task<bool> SendMailLog(Guid userId, EmailDto email);
     }
 }

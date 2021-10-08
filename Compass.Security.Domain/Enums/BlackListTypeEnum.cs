@@ -1,4 +1,4 @@
-namespace Compass.Security.Domain.Commons.Enums
+namespace Compass.Security.Domain.Enums
 {
     public enum BlackListTypeEnum
     {

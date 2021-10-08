@@ -10,8 +10,6 @@ namespace Compass.Security.Infrastructure.Persistences.Configurations
         {
             builder.ToTable("user_roles");
 
-            //builder.HasNoKey();
-
             builder.Property(x => x.UserId)
                 .HasColumnName("user_id")
                 .IsRequired();

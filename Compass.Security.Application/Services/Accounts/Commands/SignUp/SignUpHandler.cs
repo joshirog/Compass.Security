@@ -14,14 +14,16 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
     public class SignUpHandler : IRequestHandler<SignUpCommand, ResponseDto<SignUpResponse>>
     {
         private readonly IIdentityService _identityService;
+        private readonly IUserNotificationRepository _userNotificationRepository;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public SignUpHandler(IIdentityService identityService, IMapper mapper, IMediator mediator)
+        public SignUpHandler(IIdentityService identityService, IMapper mapper, IMediator mediator, IUserNotificationRepository userNotificationRepository)
         {
             _identityService = identityService;
             _mapper = mapper;
             _mediator = mediator;
+            _userNotificationRepository = userNotificationRepository;
         }
         
         public async Task<ResponseDto<SignUpResponse>> Handle(SignUpCommand request, CancellationToken cancellationToken)
@@ -30,6 +32,14 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
             {
                 new("firstname", request.Firstname),
                 new("lastname", request.Lastname),
+                new("avatar", ConfigurationConstant.Avatar, ClaimValueTypes.String)
+            });
+
+            await _userNotificationRepository.InsertAsync(new UserNotification
+            {
+                UserId = user.Id,
+                EmailCounter = 0,
+                SmsCounter = 0,
             });
             
             if (isSuccess)

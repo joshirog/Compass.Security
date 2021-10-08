@@ -12,8 +12,11 @@ namespace Compass.Security.Application.Commons.Constants
         #region General
         public static string ConnectionString { get; set; }
 
-        public static string Avatar = "https://2mingenieria.com.ve/wp-content/uploads/2018/10/kisspng-avatar-user-medicine-surgery-patient-avatar-5acc9f7a7cb983.0104600115233596105109-300x300.jpg";
-        
+        public const string Avatar = "https://2mingenieria.com.ve/wp-content/uploads/2018/10/kisspng-avatar-user-medicine-surgery-patient-avatar-5acc9f7a7cb983.0104600115233596105109-300x300.jpg";
+
+        public const int UserMaxEmail = 5;
+
+        public const int UserMaxSms = 5;
         #endregion
         
         #region oAuth

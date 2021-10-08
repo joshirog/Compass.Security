@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Interfaces;
-using Compass.Security.Domain.Commons.Interfaces;
+using Compass.Security.Domain.Interfaces;
 using Compass.Security.Infrastructure.Persistences.Contexts;
 using Microsoft.EntityFrameworkCore;
 

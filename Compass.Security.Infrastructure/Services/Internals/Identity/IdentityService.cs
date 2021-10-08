@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Interfaces;
-using Compass.Security.Domain.Commons.Enums;
+using Compass.Security.Domain.Enums;
 using Compass.Security.Domain.Entities;
 using Compass.Security.Domain.Exceptions;
 using Microsoft.AspNetCore.Authentication;
@@ -133,8 +133,9 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             
                 await _userManager.AddClaimsAsync(user, new List<Claim>
                 {
-                    new("FullName", "", ClaimValueTypes.String),
-                    new("Avatar", ConfigurationConstant.Avatar, ClaimValueTypes.String)
+                    new("firstname", "firstname", ClaimValueTypes.String),
+                    new("lastname", "lastname", ClaimValueTypes.String),
+                    new("avatar", ConfigurationConstant.Avatar, ClaimValueTypes.String)
                 });
             }
 

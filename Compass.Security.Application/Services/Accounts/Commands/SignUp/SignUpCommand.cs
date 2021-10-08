@@ -2,7 +2,7 @@ using System;
 using AutoMapper;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Mapping;
-using Compass.Security.Domain.Commons.Enums;
+using Compass.Security.Domain.Enums;
 using Compass.Security.Domain.Entities;
 using MediatR;
 

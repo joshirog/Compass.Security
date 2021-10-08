@@ -23,7 +23,7 @@ namespace Compass.Security.Infrastructure.Services.Externals.SendInBlue
             _clientFactory = clientFactory;
         }
 
-        public async Task SendEmail(EmailDto entity)
+        public async Task<string> SendEmail(EmailDto entity)
         {
             _logger.LogInformation("[SendInBlueClient - {@Datetime}] : Sending email ... to {@Subject}", _dateTimeService.Now, entity.Subject);
             
@@ -46,6 +46,8 @@ namespace Compass.Security.Infrastructure.Services.Externals.SendInBlue
             {
                 _logger.LogError("[SendInBlueClient - {@Datetime}] : error {@Id}", _dateTimeService.Now, result);
             }
+
+            return result;
         }
     }
 }

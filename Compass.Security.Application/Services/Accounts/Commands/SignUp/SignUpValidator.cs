@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Interfaces;
-using Compass.Security.Domain.Commons.Enums;
+using Compass.Security.Domain.Enums;
 using FluentValidation;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
