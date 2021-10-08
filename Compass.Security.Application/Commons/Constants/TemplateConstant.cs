@@ -12,5 +12,7 @@ namespace Compass.Security.Application.Commons.Constants
 
         public const string SubjectActivateAccount = "Activate account";
         public const string SubjectWelcome = "Welcome";
+        public const string SubjectRecovery = "Recovery password";
+        public const string SubjectReset = "Reset Password";
     }
 }

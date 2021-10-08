@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
 {
-    public class SignInCommand : IRequest<ResponseDto<SignInResponse>>
+    public class SignInCommand : IRequest<ResponseDto<SignInCommand>>
     {
         public string Username { get; set; }
 
@@ -16,7 +16,5 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
         public string Captcha { get; set; }
 
         public string ReturnUrl { get; set; }
-        
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }  
     }
 }

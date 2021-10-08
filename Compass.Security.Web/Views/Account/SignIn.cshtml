@@ -1,5 +1,6 @@
 @using Compass.Security.Application.Commons.Constants
 @model Compass.Security.Application.Services.Accounts.Commands.SignIn.SignInCommand
+@inject Compass.Security.Application.Commons.Interfaces.ICacheService _cacheService
 
 @{
     ViewBag.Title = "Sign In";
@@ -11,7 +12,7 @@
         <p>Don't have an account yet? <a asp-action="SignUp" asp-controller="Account">Sign up here</a></p>
     </div>
     <div class="mb-4">
-        @foreach (var scheme in Model.ExternalLogins)
+        @foreach (var scheme in await _cacheService.ExternalLogin())
         {
             <button class="btn btn-lg btn-white btn-block" type="submit" name="provider" value="@scheme.Name">
                 <span class="d-flex justify-content-center align-items-center">

@@ -9,10 +9,6 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Resend
             RuleFor(v => v.UserId)
                 .MaximumLength(36)
                 .NotEmpty();
-            
-            RuleFor(v => v.Email)
-                .MaximumLength(36)
-                .NotEmpty();
         }
     }
 }

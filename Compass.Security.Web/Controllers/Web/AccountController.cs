@@ -1,30 +1,24 @@
 using System.Threading.Tasks;
 using Compass.Security.Application.Services.Accounts.Commands.Confirm;
 using Compass.Security.Application.Services.Accounts.Commands.External;
+using Compass.Security.Application.Services.Accounts.Commands.Recovery;
 using Compass.Security.Application.Services.Accounts.Commands.Resend;
+using Compass.Security.Application.Services.Accounts.Commands.Reset;
 using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
-using Compass.Security.Application.Services.Accounts.Queries.Scheme;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Compass.Security.Web.Controllers.Web
 {
     public class AccountController : BaseWebController
     {
-        public async Task<IActionResult> SignIn(string returnUrl)
+        public IActionResult SignIn(string returnUrl)
         {
             if (User.Identity is not {IsAuthenticated: true})
             {
-                var response = await Mediator.Send(new SchemeQuery());
-                
-                return View(new SignInCommand
-                {
-                    ReturnUrl = returnUrl,
-                    ExternalLogins = response.Data
-                });
+                return View(new SignInCommand { ReturnUrl = returnUrl });
             }
             
             if (!string.IsNullOrEmpty(returnUrl))
@@ -39,12 +33,28 @@ namespace Compass.Security.Web.Controllers.Web
         {
             var response = await Mediator.Send(command);
 
-            return response.Success switch
+            switch (response.Success)
             {
-                true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
-                true => RedirectToAction("Index", "Home"),
-                _ => View(command)
-            };
+                case true when !string.IsNullOrEmpty(command.ReturnUrl):
+                    return Redirect(command.ReturnUrl);
+                case true:
+                    return RedirectToAction("Index", "Home");
+                default:
+                    return View(command);
+            }
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> SignOut(string returnUrl)
+        {
+            await Mediator.Send(new SignOutCommand());
+            
+            if(!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction("Index", "Home");
         }
         
         [AllowAnonymous]
@@ -68,11 +78,7 @@ namespace Compass.Security.Web.Controllers.Web
             {
                 TempData["message"] = response.Message;
                 
-                return View("SignIn", new SignInCommand
-                {
-                    ReturnUrl = returnUrl,
-                    ExternalLogins = (await Mediator.Send(new SchemeQuery())).Data
-                });
+                return View("SignIn", new SignInCommand { ReturnUrl = returnUrl, });
             }
 
             if(string.IsNullOrEmpty(returnUrl))
@@ -81,9 +87,9 @@ namespace Compass.Security.Web.Controllers.Web
             return LocalRedirect(returnUrl);
         }
         
-        public IActionResult SignUp()
+        public IActionResult SignUp(string returnUrl)
         {
-            return View();
+            return View(new SignUpCommand { ReturnUrl = returnUrl });
         }
         
         [HttpPost]
@@ -100,25 +106,33 @@ namespace Compass.Security.Web.Controllers.Web
                 true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
                 true => RedirectToAction("Resend", new
                 {
-                    UserId = response.Data.UserId, 
-                    Email = response.Data.Email,
-                    ReturnUrl = command.ReturnUrl
+                    id = response.Data.UserId,
+                    returnUrl = command.ReturnUrl
                 }),
                 _ => View(command)
             };
         }
         
-        public IActionResult Resend(string userId, string email, string returnUrl)
+        public IActionResult Resend(string id, string returnUrl)
         {
-            return View(new ResendCommand { UserId = userId, Email = email, ReturnUrl = returnUrl });
+            return View(new ResendCommand { UserId = id, ReturnUrl = returnUrl });
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Resend(ResendCommand command)
         {
-            await Mediator.Send(command);
+            if (string.IsNullOrEmpty(command.UserId))
+            {
+                TempData["resend_msg"] = "";
+                return View(command);
+            }
             
+            var response = await Mediator.Send(command);
+            
+            if(response.Success)
+                TempData["resend_msg"] = response.Message;
+
             return View(command);
         }
         
@@ -155,27 +169,50 @@ namespace Compass.Security.Web.Controllers.Web
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Recovery()
+        public IActionResult Recovery(string returnUrl)
         {
-            return View();
+            return View(new RecoveryCommand { ReturnUrl = returnUrl});
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Recovery(RecoveryCommand command)
+        {
+            var response = await Mediator.Send(command);
+            
+            TempData["message"] = response.Message;
+            
+            if(response.Success)
+                return RedirectToAction("SignIn", "Account", new { command.ReturnUrl });
+
+            return View(command);
+        }
+        
+        public IActionResult Reset(string id, string token, string returnUrl)
+        {
+            return View(new ResetCommand() { UserId = id, Token = token, ReturnUrl = returnUrl });
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reset(ResetCommand command)
+        {
+            var response = await Mediator.Send(command);
+
+            if (!response.Success) 
+                return View(new ResetCommand { UserId = command.UserId, Token = command.Token, ReturnUrl = command.ReturnUrl });
+
+            TempData["message"] = response.Message;
+            
+            if (!string.IsNullOrEmpty(command.ReturnUrl))
+                return Redirect(command.ReturnUrl);
+                
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult TwoStep()
         {
             return View();
-        }
-        
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> SignOut(string returnUrl)
-        {
-            await Mediator.Send(new SignOutCommand());
-            
-            if(!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -32,8 +32,7 @@ namespace Compass.Security.Infrastructure.Persistences.Configurations
             
             builder.Property(x => x.Identifier)
                 .HasColumnName("identifier")
-                .IsRequired()
-                .HasMaxLength(50);
+                .IsRequired();
 
             builder.Property(x => x.CreatedAt)
                 .HasColumnName("created_at")

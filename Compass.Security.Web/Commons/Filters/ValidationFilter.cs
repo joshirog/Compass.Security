@@ -1,12 +1,12 @@
 using System.Linq;
-using Compass.Security.Domain.Exceptions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using FluentValidation.Results;
+using Compass.Security.Domain.Exceptions;
 
 namespace Compass.Security.Web.Commons.Filters
 {
@@ -30,13 +30,12 @@ namespace Compass.Security.Web.Commons.Filters
 
                     var viewData = new ViewDataDictionary(ModelMetadataProvider, context.ModelState);
                     
-                    foreach(var item in context.ModelState)
+                    foreach(var (parameter, value) in context.ModelState)
                     {
-                        var parameter = item.Key;
-                        var rawValue = item.Value.RawValue;
-                        var attemptedValue = item.Value.AttemptedValue;
+                        var rawValue = value.RawValue;
+                        var attemptedValue = value.AttemptedValue;
                         viewData[parameter] = attemptedValue;
-                        System.Console.WriteLine($"Parameter: {parameter}, value: {attemptedValue}");
+                        System.Console.WriteLine($"Parameter: {parameter}, raw: {rawValue} - value: {attemptedValue}");
                     }
                     
                     context.Result = new ViewResult { ViewData = viewData };

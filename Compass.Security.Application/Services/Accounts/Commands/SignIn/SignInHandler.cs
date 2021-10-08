@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
 {
-    public class SignInHandler: IRequestHandler<SignInCommand, ResponseDto<SignInResponse>>
+    public class SignInHandler: IRequestHandler<SignInCommand, ResponseDto<SignInCommand>>
     {
         private readonly IMapper _mapper;
         private readonly IIdentityService _identityService;
@@ -21,20 +21,20 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
             _captchaService = captchaService;
         }
         
-        public async Task<ResponseDto<SignInResponse>> Handle(SignInCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto<SignInCommand>> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
             var isValid = await _captchaService.SiteVerify(request.Captcha);
 
             if (!isValid)
             {
-                return ResponseDto.Fail(ResponseConstant.MessageFail, new SignInResponse());
+                return ResponseDto.Fail(ResponseConstant.MessageFail, new SignInCommand());
             }
 
             var (isSuccess, user) = await _identityService.SignIn(request.Username, request.Password, request.RememberMe, true);
             
             return isSuccess ? 
-                ResponseDto.Ok(ResponseConstant.MessageSuccess, _mapper.Map<SignInResponse>(user)) : 
-                ResponseDto.Fail(ResponseConstant.MessageFail, new SignInResponse());
+                ResponseDto.Ok(ResponseConstant.MessageSuccess, _mapper.Map<SignInCommand>(user)) : 
+                ResponseDto.Fail(ResponseConstant.MessageFail, new SignInCommand());
         }
     }
 }

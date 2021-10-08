@@ -1,0 +1,59 @@
+@model Compass.Security.Application.Services.Accounts.Commands.Reset.ResetCommand
+
+@{
+    ViewBag.Title = "Recovery";
+}
+
+<form class="js-validate" method="post" asp-controller="Account" asp-action="Reset">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Reset password?</h1>
+        <p>Enter the email address you used when you joined and we'll send you instructions to reset your password.</p>
+    </div>
+    
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+    <input type="hidden" asp-for="UserId"/>
+    <input type="hidden" asp-for="Token"/>
+    <input type="hidden" asp-for="ReturnUrl"/>
+    
+    <div class="js-form-message form-group">
+        <label class="input-label" for="resetPasswordSrEmail" tabindex="0">Your new password</label>
+        <input type="password" 
+               class="js-toggle-password form-control form-control-lg"
+               asp-for="Password"
+               placeholder="8+ characters required" aria-label="8+ characters required" required
+               data-msg="Your password is invalid. Please try again."
+               data-hs-toggle-password-options='{
+        "target": [".js-toggle-password-target-1", ".js-toggle-password-target-2"],
+        "defaultClass": "tio-hidden-outlined",
+        "showClass": "tio-visible-outlined",
+        "classChangeTarget": ".js-toggle-passowrd-show-icon-1"
+        }'>
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    
+    <div class="js-form-message form-group">
+        <label class="input-label" for="resetPasswordSrEmail" tabindex="0">Confirm your new password</label>
+        <input type="password" 
+               class="js-toggle-password form-control form-control-lg" 
+               asp-for="ConfirmPassword"
+               placeholder="8+ characters required" 
+               aria-label="8+ characters required" required
+               data-msg="Password does not match the confirm password."
+               data-hs-toggle-password-options='{
+              "target": [".js-toggle-password-target-1", ".js-toggle-password-target-2"],
+              "defaultClass": "tio-hidden-outlined",
+              "showClass": "tio-visible-outlined",
+              "classChangeTarget": ".js-toggle-passowrd-show-icon-2"
+              }'>
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-lg btn-block btn-primary">Submit</button>
+
+    <div class="text-center mt-2">
+        <a class="btn btn-link" asp-action="SignIn" asp-controller="Account" asp-route-returnUrl="@Model.ReturnUrl">
+            <i class="tio-chevron-left"></i> Back to Sign in
+        </a>
+    </div>
+</form>

@@ -11,23 +11,34 @@
 
     <h1 class="display-4">Verify your email</h1>
 
-    <p class="mb-1">We've sent a link to your email address:</p>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <span class="d-block text-dark font-weight-bold mb-1">@Model.Email</span>
+    @if (TempData["resend_msg"] is not null && TempData["resend_msg"] != "")
+    {
+        <div class="form-group text-center">
+            <strong>@TempData["resend_msg"]</strong>
+            <br>
+        </div>
+    }
 
+    <p class="mb-1">We've sent a link to your email address</p>
+    <span class="d-block text-dark font-weight-bold mb-1"></span>
+    
     <p>Please follow the link inside to continue.</p>
-
+    
     <div class="mt-4 mb-3">
         <a class="btn btn-primary btn-wide" asp-action="SignIn" asp-controller="Account">Skip now</a>
     </div>
     
-    <form method="post" asp-controller="Account" asp-action="Resend">
-        <input type="hidden" asp-for="UserId"/>
-        <input type="hidden" asp-for="Email"/>
-        <input type="hidden" asp-for="ReturnUrl"/>
-        <p>
-            Didn't receive an email?
-            <button type="submit">Resend</button>
-        </p>
-    </form>
+    @if (TempData["resend_msg"] is null)
+    {
+        <form method="post" asp-controller="Account" asp-action="Resend">
+            <input type="hidden" asp-for="UserId"/>
+            <input type="hidden" asp-for="ReturnUrl"/>
+            <p>
+                Didn't receive an email?
+                <a href="javascript:document.forms[0].submit()">Resend</a>
+            </p>
+        </form>
+    }
 </div>

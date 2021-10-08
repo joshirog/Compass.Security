@@ -32,13 +32,10 @@ namespace Compass.Security.Infrastructure.Services
             var userNotification = await _userNotificationRepository.GetFilterAsync(x => x.UserId.Equals(userId));
             userNotification.EmailCounter += 1;
 
-            if (userNotification.EmailCounter > ConfigurationConstant.UserMaxEmail)
-                throw new ErrorInvalidException(new[]
-                    { "You have exceeded the maximum number of daily notifications, please try again later" });
-            
             await _userNotificationRepository.UpdateAsync(userNotification);
                     
             var identifier = await _notificationService.SendEmail(email);
+            //var identifier = Guid.NewGuid().ToString();
                 
             var result = await _notificationLogRepository.InsertAsync(new NotificationLog
             {
