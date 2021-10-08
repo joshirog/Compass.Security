@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
 using Compass.Security.Application.Services.Accounts.Commands.Confirm;
 using Compass.Security.Application.Services.Accounts.Commands.External;
+using Compass.Security.Application.Services.Accounts.Commands.Otp;
 using Compass.Security.Application.Services.Accounts.Commands.Recovery;
 using Compass.Security.Application.Services.Accounts.Commands.Resend;
 using Compass.Security.Application.Services.Accounts.Commands.Reset;
 using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
+using Compass.Security.Application.Services.Accounts.Commands.TwoFactor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -209,10 +211,50 @@ namespace Compass.Security.Web.Controllers.Web
                 
             return RedirectToAction("Index", "Home");
         }
-
-        public IActionResult TwoStep()
+        
+        [HttpGet]
+        public IActionResult Otp(string returnUrl)
         {
-            return View();
+            if (User.Identity is not {IsAuthenticated: true}) 
+                return View(null);
+            
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+                
+            return RedirectToAction("Index", "Home");
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ResendOpt(string id, string returnUrl)
+        {
+            if (User.Identity is not {IsAuthenticated: true})
+            {
+                var response = await Mediator.Send(new OtpCommand { UserId = id, ReturnUrl = returnUrl });
+            
+                TempData["message"] = response.Message;
+                
+                return View(nameof(TwoStep), new TwoFactorCommand { Id =  id, ReturnUrl = returnUrl });
+            }
+            
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+                
+            return RedirectToAction("Index", "Home");
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TwoStep(TwoFactorCommand command)
+        {
+            var response = await Mediator.Send(command);
+            
+            if (!response.Success) 
+                return View(command);
+            
+            if (!string.IsNullOrEmpty(command.ReturnUrl))
+                return Redirect(command.ReturnUrl);
+            
+            return RedirectToAction("Index", "Home");
         }
     }
 }
