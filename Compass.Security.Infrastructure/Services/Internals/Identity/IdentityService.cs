@@ -27,7 +27,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             _userRepository = userRepository;
         }
         
-        public async Task<(bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed)
+        public async Task<(bool, bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed)
         {
             var result = await _signInManager.PasswordSignInAsync(username, password, isPersistent, isLockOnFailed);
             
@@ -45,7 +45,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
 
             if (result.RequiresTwoFactor)
             {
-                return (result.RequiresTwoFactor, user);
+                return (result.RequiresTwoFactor, result.RequiresTwoFactor, user);
             }
 
             if (!result.Succeeded)
@@ -53,7 +53,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             
             await _userManager.ResetAccessFailedCountAsync(user);
                 
-            return (result.Succeeded, user);
+            return (result.Succeeded, result.RequiresTwoFactor, user);
         }
         
         public async Task<List<AuthenticationScheme>> Schemes()

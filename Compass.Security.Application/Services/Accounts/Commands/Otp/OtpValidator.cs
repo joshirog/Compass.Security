@@ -7,7 +7,6 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Otp
         public OtpValidator()
         {
             RuleFor(v => v.UserId)
-                .MaximumLength(36)
                 .NotEmpty();
         }
     }

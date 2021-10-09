@@ -27,7 +27,8 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Reset
             
             var result = await _identityService.ResetPassword(request.UserId, tokenDecoded, request.Password);
             
-            await _mediator.Publish(new ResetNotification{ UserId = request.UserId }, cancellationToken);
+            if(result)
+                await _mediator.Publish(new ResetNotification{ UserId = request.UserId }, cancellationToken);
             
             return result ? 
                 ResponseDto.Ok(ResponseConstant.MessageSuccessPassword, true) : 

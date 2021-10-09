@@ -8,7 +8,7 @@ namespace Compass.Security.Application.Commons.Interfaces
 {
     public interface IIdentityService
     {
-        Task<(bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed);
+        Task<(bool, bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed);
         
         Task<List<AuthenticationScheme>> Schemes();
         

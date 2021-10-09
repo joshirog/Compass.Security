@@ -13,7 +13,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Otp
 {
     public class OtpNotification : INotification
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public string ReturnUrl { get; set; }
     }
@@ -37,7 +37,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Otp
         
         public async Task Handle(OtpNotification notification, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(new Guid(notification.UserId));
+            var user = await _userRepository.GetByIdAsync(notification.UserId);
             var claims = await _identityService.GetClaims(user);
             var fullName = claims.Where(x => x.Type.Equals("FullName")).Select(x => x.Value).FirstOrDefault();
 

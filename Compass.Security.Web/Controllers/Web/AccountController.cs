@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Compass.Security.Application.Services.Accounts.Commands.Confirm;
 using Compass.Security.Application.Services.Accounts.Commands.External;
@@ -56,7 +57,7 @@ namespace Compass.Security.Web.Controllers.Web
             if(!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("SignIn", "Account");
         }
         
         [AllowAnonymous]
@@ -209,7 +210,7 @@ namespace Compass.Security.Web.Controllers.Web
             if (!string.IsNullOrEmpty(command.ReturnUrl))
                 return Redirect(command.ReturnUrl);
                 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("SignIn", "Account", new { command.ReturnUrl });
         }
         
         [HttpGet]
@@ -229,7 +230,7 @@ namespace Compass.Security.Web.Controllers.Web
         {
             if (User.Identity is not {IsAuthenticated: true})
             {
-                var response = await Mediator.Send(new OtpCommand { UserId = id, ReturnUrl = returnUrl });
+                var response = await Mediator.Send(new OtpCommand { UserId = Guid.Parse(id), ReturnUrl = returnUrl });
             
                 TempData["message"] = response.Message;
                 
