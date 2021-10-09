@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AutoMapper;
 using Compass.Security.Application.Commons.Dtos;
@@ -11,6 +12,8 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
 {
     public class SignInCommand : IRequest<ResponseDto<SignInCommand>>
     {
+        public Guid Id { get; set; }
+        
         public string Username { get; set; }
 
         public string Password { get; set; }

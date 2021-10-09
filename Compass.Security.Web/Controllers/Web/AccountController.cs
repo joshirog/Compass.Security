@@ -38,6 +38,9 @@ namespace Compass.Security.Web.Controllers.Web
 
             switch (response.Success)
             {
+                case true when response.Data.IsOtp:
+                    TempData["message"] = response.Message;
+                    return RedirectToAction(nameof(Otp), new { response.Data.Id, command.ReturnUrl });
                 case true when !string.IsNullOrEmpty(command.ReturnUrl):
                     return Redirect(command.ReturnUrl);
                 case true:
