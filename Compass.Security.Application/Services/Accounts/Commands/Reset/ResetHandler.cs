@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,8 +27,8 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Reset
         public async Task<ResponseDto<bool>> Handle(ResetCommand request, CancellationToken cancellationToken)
         {
             var notification = await _userNotificationRepository.GetFilterAsync(x =>
-                x.UserId.Equals(request.UserId) &&
-                x.Type.Equals(NotificationTypeEnum.Resend));
+                x.UserId.Equals(Guid.Parse(request.UserId)) &&
+                x.Type.Equals(NotificationTypeEnum.Reset));
             
             if (notification.Counter >= ConfigurationConstant.UserMaxEmail)
                 return ResponseDto.Fail(ResponseConstant.MessageMaxNotification, false);

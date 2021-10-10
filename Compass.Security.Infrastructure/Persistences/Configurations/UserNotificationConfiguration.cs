@@ -30,7 +30,8 @@ namespace Compass.Security.Infrastructure.Persistences.Configurations
             
             builder.Property(x => x.Counter)
                 .HasColumnName("counter")
-                .IsRequired();
+                .IsRequired()
+                .HasDefaultValue(0);
 
             builder.Property(x => x.CreatedAt)
                 .HasColumnName("created_at")

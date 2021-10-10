@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Compass.Security.Application.Services.Accounts.Commands.Confirm;
 using Compass.Security.Application.Services.Accounts.Commands.External;
@@ -10,6 +11,8 @@ using Compass.Security.Application.Services.Accounts.Commands.SignIn;
 using Compass.Security.Application.Services.Accounts.Commands.SignOut;
 using Compass.Security.Application.Services.Accounts.Commands.SignUp;
 using Compass.Security.Application.Services.Accounts.Commands.TwoFactor;
+using Compass.Security.Domain.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +22,14 @@ namespace Compass.Security.Web.Controllers.Web
     {
         public IActionResult SignIn(string returnUrl)
         {
-            if (User.Identity is not {IsAuthenticated: true})
+            if (User.Identity is not { IsAuthenticated: true })
             {
                 return View(new SignInCommand { ReturnUrl = returnUrl });
             }
-            
+
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
-                
+
             return RedirectToAction("Index", "Home");
         }
         
@@ -34,18 +37,31 @@ namespace Compass.Security.Web.Controllers.Web
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(SignInCommand command)
         {
-            var response = await Mediator.Send(command);
-
-            TempData["message"] = response.Message;
-
-            return response.Success switch
+            try
             {
-                true when response.Data.IsOtp => RedirectToAction(nameof(TwoStep),
-                    new { response.Data.Id, command.ReturnUrl }),
-                true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
-                true => RedirectToAction("Index", "Home"),
-                _ => View(command)
-            };
+                var response = await Mediator.Send(command);
+
+                TempData["message"] = response.Message;
+
+                return response.Success switch
+                {
+                    true when response.Data.IsOtp => RedirectToAction(nameof(TwoStep),
+                        new { response.Data.Id, command.ReturnUrl }),
+                    true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
+                    true => RedirectToAction("Index", "Home"),
+                    _ => View(command)
+                };
+            }
+            catch (ValidationException e)
+            {
+                CatchErrorValidation(e);
+            }
+            catch (ErrorInvalidException e)
+            {
+                CatchErrorInvalid(e);
+            }
+            
+            return View(command);
         }
         
         [HttpPost]
@@ -100,21 +116,34 @@ namespace Compass.Security.Web.Controllers.Web
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(SignUpCommand command)
         {
-            var response = await Mediator.Send(command);
-            
-            if(response.Success)
-                TempData["message"] = response.Message;
-            
-            return response.Success switch
+            try
             {
-                true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
-                true => RedirectToAction("Resend", new
+                var response = await Mediator.Send(command);
+            
+                if(response.Success)
+                    TempData["message"] = response.Message;
+            
+                return response.Success switch
                 {
-                    id = response.Data.UserId,
-                    returnUrl = command.ReturnUrl
-                }),
-                _ => View(command)
-            };
+                    true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
+                    true => RedirectToAction("Resend", new
+                    {
+                        id = response.Data.UserId,
+                        returnUrl = command.ReturnUrl
+                    }),
+                    _ => View(command)
+                };
+            }
+            catch (ValidationException e)
+            {
+                CatchErrorValidation(e);
+            }
+            catch (ErrorInvalidException e)
+            {
+                CatchErrorInvalid(e);
+            }
+            
+            return View(command);
         }
         
         public IActionResult Resend(string id, string returnUrl)
@@ -126,51 +155,39 @@ namespace Compass.Security.Web.Controllers.Web
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Resend(ResendCommand command)
         {
-            if (string.IsNullOrEmpty(command.UserId))
+            try
             {
-                TempData["message"] = "";
+                if (string.IsNullOrEmpty(command.UserId))
+                {
+                    TempData["message"] = "";
+                    return View(command);
+                }
+            
+                var response = await Mediator.Send(command);
+            
+                TempData["message"] = response.Message;
+            
                 return View(command);
             }
+            catch (ValidationException e)
+            {
+                CatchErrorValidation(e);
+            }
+            catch (ErrorInvalidException e)
+            {
+                CatchErrorInvalid(e);
+            }
             
-            var response = await Mediator.Send(command);
-            
-            if(response.Success)
-                TempData["message"] = response.Message;
-
             return View(command);
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Confirm(string userId, string token, string returnUrl)
+        public async Task<IActionResult> Confirm(string id, string token, string returnUrl)
         {
-            var response = await Mediator.Send(new ConfirmCommand { UserId = userId, Token = token });
-
-            if (!response.Success) 
-                return View(new ConfirmCommand { UserId = userId, Token = token, ReturnUrl = returnUrl });
+            var response = await Mediator.Send(new ConfirmCommand { UserId = id, Token = token });
 
             TempData["message"] = response.Message;
             
-            if (!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-                
-            return RedirectToAction("Index", "Home");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Confirm(ConfirmCommand command)
-        {
-            var response = await Mediator.Send(command);
-
-            if (!response.Success) 
-                return View(command);
-
-            TempData["message"] = response.Message;
-            
-            if (!string.IsNullOrEmpty(command.ReturnUrl))
-                return Redirect(command.ReturnUrl);
-                
-            return RedirectToAction("Index", "Home");
+            return View(new ConfirmCommand { UserId = id, Token = token, ReturnUrl = returnUrl });
         }
 
         public IActionResult Recovery(string returnUrl)
@@ -182,13 +199,26 @@ namespace Compass.Security.Web.Controllers.Web
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Recovery(RecoveryCommand command)
         {
-            var response = await Mediator.Send(command);
+            try
+            {
+                var response = await Mediator.Send(command);
             
-            TempData["message"] = response.Message;
+                TempData["message"] = response.Message;
             
-            if(response.Success)
-                return RedirectToAction("SignIn", "Account", new { command.ReturnUrl });
+                if(response.Success)
+                    return RedirectToAction("SignIn", "Account", new { command.ReturnUrl });
 
+                return View(command);
+            }
+            catch (ValidationException e)
+            {
+                CatchErrorValidation(e);
+            }
+            catch (ErrorInvalidException e)
+            {
+                CatchErrorInvalid(e);
+            }
+            
             return View(command);
         }
         
@@ -201,17 +231,31 @@ namespace Compass.Security.Web.Controllers.Web
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reset(ResetCommand command)
         {
-            var response = await Mediator.Send(command);
+            try
+            {
+                var response = await Mediator.Send(command);
 
-            if (!response.Success) 
-                return View(new ResetCommand { UserId = command.UserId, Token = command.Token, ReturnUrl = command.ReturnUrl });
+                if (!response.Success)
+                    return View(new ResetCommand
+                        { UserId = command.UserId, Token = command.Token, ReturnUrl = command.ReturnUrl });
 
-            TempData["message"] = response.Message;
+                TempData["message"] = response.Message;
+
+                if (!string.IsNullOrEmpty(command.ReturnUrl))
+                    return Redirect(command.ReturnUrl);
+
+                return RedirectToAction("SignIn", "Account", new { command.ReturnUrl });
+            }
+            catch (ValidationException e)
+            {
+                CatchErrorValidation(e);
+            }
+            catch (ErrorInvalidException e)
+            {
+                CatchErrorInvalid(e);
+            }
             
-            if (!string.IsNullOrEmpty(command.ReturnUrl))
-                return Redirect(command.ReturnUrl);
-                
-            return RedirectToAction("SignIn", "Account", new { command.ReturnUrl });
+            return View(command);
         }
         
         [HttpGet]
@@ -248,17 +292,47 @@ namespace Compass.Security.Web.Controllers.Web
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TwoStep(TwoFactorCommand command)
         {
-            var response = await Mediator.Send(command);
+            try
+            {
+                var response = await Mediator.Send(command);
             
-            TempData["message"] = response.Message;
+                TempData["message"] = response.Message;
             
-            if (!response.Success) 
-                return View(command);
+                if (!response.Success) 
+                    return View(command);
             
-            if (!string.IsNullOrEmpty(command.ReturnUrl))
-                return Redirect(command.ReturnUrl);
+                if (!string.IsNullOrEmpty(command.ReturnUrl))
+                    return Redirect(command.ReturnUrl);
             
-            return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (ValidationException e)
+            {
+                CatchErrorValidation(e);
+            }
+            catch (ErrorInvalidException e)
+            {
+                CatchErrorInvalid(e);
+            }
+            
+            return View(command);
+        }
+
+        private void CatchErrorValidation(ValidationException e)
+        {
+            Console.WriteLine(e);
+                
+            foreach(var failure in e.Errors)
+            {
+                ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+            }
+        }
+        
+        private void CatchErrorInvalid(ErrorInvalidException e)
+        {
+            Console.WriteLine(e);
+                
+            e.Errors?.ToList().ForEach(x => ModelState.AddModelError("", x));
         }
     }
 }

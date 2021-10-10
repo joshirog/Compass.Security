@@ -26,15 +26,10 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Reset
                 .MinimumLength(8)
                 .MaximumLength(100)
                 .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W]).{8,}$").WithMessage("The password is insecure, please try entering a new one. It must contain at least one lowercase letter, one uppercase letter, numbers, and at least one special character.")
-                //.Matches("[A-Z]").WithMessage("Password requires at least one uppercase letter")
-                //.Matches("[a-z]").WithMessage("The password requires at least one lowercase letter.")
-                //.Matches("[0-9]").WithMessage("The password requires at least one digit.")
-                //.Matches("[^a-zA-Z0-9]").WithMessage("The password requires at least one special character.")
-                .MustAsync((password, _) => CheckBackList(password))
-                .WithMessage("The password is insecure, please try entering a new one.");
+                .MustAsync((password, _) => CheckBackList(password)).WithMessage("The password is insecure, please try entering a new one.");
             
             RuleFor(v => v.Password)
-                .Equal(v => v.ConfirmPassword);
+                .Equal(v => v.ConfirmPassword).WithMessage("The password entered must be the same as the confirmed password.");
         }
         
         private async Task<bool> CheckBackList(string password)

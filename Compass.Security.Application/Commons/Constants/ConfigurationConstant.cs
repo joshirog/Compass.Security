@@ -108,7 +108,7 @@ namespace Compass.Security.Application.Commons.Constants
             Console.WriteLine($"TemplateReset: {TemplateReset}");
             Console.WriteLine($"TemplatePassword : {TemplatePassword}");
             Console.WriteLine($"TemplateOtp : {TemplateOtp}");
-            Console.WriteLine($"TemplateOtp : {TemplateLocked}");
+            Console.WriteLine($"TemplateLocked : {TemplateLocked}");
             Console.WriteLine($"GoogleCaptchaKey : {GoogleCaptchaKey}");
             Console.WriteLine($"GoogleCaptchaSecret : {GoogleCaptchaSecret}");
             Console.WriteLine($"GoogleAuthKey : {GoogleAuthKey}");

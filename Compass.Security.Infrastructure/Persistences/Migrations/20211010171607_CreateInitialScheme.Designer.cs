@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Compass.Security.Infrastructure.Persistences.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211010032310_CreateInitialScheme")]
+    [Migration("20211010171607_CreateInitialScheme")]
     partial class CreateInitialScheme
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -336,7 +336,7 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2eb40b43-4b5c-4a6a-91b9-828322b89f36"),
+                            Id = new Guid("568fdcf4-43ff-419c-8f49-4d44a6cd34f9"),
                             CreatedAt = new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = "migrations",
                             Status = "Active",
@@ -634,7 +634,9 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                         .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<int>("Counter")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("counter");
 
                     b.Property<DateTime>("CreatedAt")

@@ -240,7 +240,7 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    counter = table.Column<int>(type: "integer", nullable: false),
+                    counter = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -337,7 +337,7 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
             migrationBuilder.InsertData(
                 table: "blacklists",
                 columns: new[] { "id", "created_at", "created_by", "status", "type", "updated_at", "updated_by", "Value" },
-                values: new object[] { new Guid("2eb40b43-4b5c-4a6a-91b9-828322b89f36"), new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "migrations", "Active", "Password", null, null, "Secret2020$$" });
+                values: new object[] { new Guid("568fdcf4-43ff-419c-8f49-4d44a6cd34f9"), new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "migrations", "Active", "Password", null, null, "Secret2020$$" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_application_authorizations_application_id_status_subject_ty~",

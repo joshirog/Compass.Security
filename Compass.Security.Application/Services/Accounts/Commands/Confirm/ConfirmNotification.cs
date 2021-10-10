@@ -54,7 +54,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Confirm
                 Subject = TemplateConstant.SubjectWelcome,
                 HtmlContent = html,
                 TextContent =  TemplateConstant.SubjectWelcome,
-            }, NotificationTypeEnum.Resend);
+            }, NotificationTypeEnum.None);
         }
     }
 }

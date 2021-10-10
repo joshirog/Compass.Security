@@ -31,9 +31,11 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Resend
                 x.UserId.Equals(user.Id) &&
                 x.Type.Equals(NotificationTypeEnum.Resend));
 
-            if (notification.Counter < ConfigurationConstant.UserMaxEmail)
-                await _mediator.Publish(new SignUpNotification{ UserName = user.UserName }, cancellationToken);
-
+            if (notification.Counter >= ConfigurationConstant.UserMaxEmail)
+                return ResponseDto.Fail(ResponseConstant.MessageMaxNotification, false);
+            
+            await _mediator.Publish(new SignUpNotification{ UserName = user.UserName }, cancellationToken);
+            
             return ResponseDto.Ok(ResponseConstant.MessageConfirm, true);
         }
     }

@@ -21,13 +21,13 @@ namespace Compass.Security.Infrastructure.Services
             _notificationService = notificationService;
         }
         
-        public async Task<bool> SendMailLog(Guid userId, EmailDto email, NotificationTypeEnum type)
+        public async Task<bool> SendMailLog(Guid userId, EmailDto email, NotificationTypeEnum notificationType)
         {
-            if (!type.Equals(NotificationTypeEnum.None))
+            if (!notificationType.Equals(NotificationTypeEnum.None))
             {
                 var userNotification = await _userNotificationRepository.GetFilterAsync(x => 
                     x.UserId.Equals(userId) &&
-                    x.Type.Equals(type));
+                    x.Type.Equals(notificationType));
             
                 userNotification.Counter += 1;
 

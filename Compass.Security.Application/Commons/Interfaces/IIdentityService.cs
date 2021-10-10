@@ -14,8 +14,8 @@ namespace Compass.Security.Application.Commons.Interfaces
         Task<List<AuthenticationScheme>> Schemes();
         
         AuthenticationProperties Properties(string provider, string redirectUrl);
-        
-        Task<bool> CallBack();
+
+        Task<(bool, User)> CallBack();
         
         Task<(bool, User)> SignUp(User user, string password, IEnumerable<Claim> claims);
         

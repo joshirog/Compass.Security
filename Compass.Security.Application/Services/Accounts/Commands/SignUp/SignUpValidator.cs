@@ -31,6 +31,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
                 .NotEmpty()
                 .MinimumLength(8)
                 .MaximumLength(100)
+                .Equal(x => x.ConfirmPassword).WithMessage("The password entered must be the same as the confirmed password.")
                 .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W]).{8,}$").WithMessage("The password is insecure, please try entering a new one. It must contain at least one lowercase letter, one uppercase letter, numbers, and at least one special character.")
                 //.Matches("^[A-Z]+$").WithMessage("Password requires at least one uppercase letter")
                 //.Matches(@"[a-z]+").WithMessage("The password requires at least one lowercase letter.")

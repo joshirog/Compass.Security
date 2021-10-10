@@ -1,3 +1,20 @@
 @{
     ViewBag.Title = "Confirm";
 }
+
+<div class="text-center">
+    <div class="mb-4">
+        <img class="avatar avatar-xxl avatar-4by3" src="~/svg/illustrations/create.svg" alt="Image Description">
+    </div>
+
+    <h1 class="display-4">Account activated</h1>
+    
+    <p class="mb-1">Congratulations your account has been activated</p>
+    <span class="d-block text-dark font-weight-bold mb-1"></span>
+    
+    <p>Please follow the link inside to continue.</p>
+    
+    <div class="mt-4 mb-3">
+        <a class="btn btn-primary btn-wide" asp-action="SignIn" asp-controller="Account">Sign In</a>
+    </div>
+</div>

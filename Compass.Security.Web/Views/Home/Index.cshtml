@@ -2,12 +2,12 @@
     ViewBag.Title = "Home";
 }
 
-<div class="row">
+<div class="row col-sm-6">
     <div class="text-center">
         <ul class="list-group">
             @foreach(var claim in User.Claims) 
             {
-                <li class="list-group-item"><strong>@claim.Type</strong> : @claim.Value </li>
+                <li class="list-group-item"><strong>@claim.Type</strong> <br/> @claim.Value </li>
             }
         </ul>
         

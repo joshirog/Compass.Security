@@ -45,8 +45,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
                     await _userNotificationRepository.InsertAsync(new UserNotification
                     {
                         UserId = user.Id,
-                        Type = type,
-                        Counter = 0,
+                        Type = type
                     });
                 }
             }

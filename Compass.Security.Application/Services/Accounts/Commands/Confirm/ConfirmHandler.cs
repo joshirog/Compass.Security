@@ -27,11 +27,12 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Confirm
             
             var result = await _identityService.ConfirmEmail(request.UserId, tokenDecoded);
 
-            await _mediator.Publish(new ConfirmNotification{ UserId = request.UserId }, cancellationToken);
+            if (!result) 
+                return ResponseDto.Fail(ResponseConstant.MessageFail, false);
             
-            return result ? 
-                ResponseDto.Ok(ResponseConstant.MessageSuccessConfirm, true) : 
-                ResponseDto.Fail(ResponseConstant.MessageFail, false);
+            await _mediator.Publish(new ConfirmNotification{ UserId = request.UserId }, cancellationToken);
+
+            return ResponseDto.Ok(ResponseConstant.MessageSuccessConfirm, true);
         }
     }
 }

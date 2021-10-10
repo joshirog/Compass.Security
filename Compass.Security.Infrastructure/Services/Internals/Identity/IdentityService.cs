@@ -64,18 +64,18 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             return _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
         }
         
-        public async Task<bool> CallBack()
+        public async Task<(bool, User)> CallBack()
         {
              var info = await _signInManager.GetExternalLoginInfoAsync();
 
             if (info == null)
-                return false;
+                return (false, null);
             
             var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
 
             if (signInResult.Succeeded)
             {
-                return signInResult.Succeeded;
+                return (signInResult.Succeeded, null);
             }
             
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
@@ -84,7 +84,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             var lastname = info.Principal.FindFirstValue(ClaimTypes.Surname);
 
             if (email is null && identifier is null)
-                return false;
+                return (false, null);
 
             User user;
             var isCreated = false;
@@ -139,7 +139,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             
             await _signInManager.SignInAsync(user, false);
             
-            return identity.Succeeded;
+            return (identity.Succeeded, isCreated ? user : null);
         }
 
         public async Task<(bool, User)> SignUp(User user, string password, IEnumerable<Claim> claims)

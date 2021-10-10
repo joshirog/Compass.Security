@@ -12,6 +12,14 @@
     
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     
+    @if (TempData["message"] != null)
+    {
+        <div class="form-group text-center">
+            <strong>@TempData["message"]</strong>
+            <br>
+        </div>
+    }
+    
     <input type="hidden" asp-for="UserId"/>
     <input type="hidden" asp-for="Token"/>
     <input type="hidden" asp-for="ReturnUrl"/>

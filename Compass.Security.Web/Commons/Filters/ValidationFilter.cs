@@ -23,6 +23,7 @@ namespace Compass.Security.Web.Commons.Filters
         {
             switch (context.Exception)
             {
+                /*
                 case ValidationException ex:
                 {
                     var validationResult = new ValidationResult(ex.Errors);
@@ -50,6 +51,7 @@ namespace Compass.Security.Web.Commons.Filters
                     };
                     context.ExceptionHandled = true;
                     break;
+                    */
             }
         }
     }
