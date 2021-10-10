@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Compass.Security.Domain.Entities;
+using Compass.Security.Domain.Enums;
 using Microsoft.AspNetCore.Authentication;
 
 namespace Compass.Security.Application.Commons.Interfaces
 {
     public interface IIdentityService
     {
-        Task<(bool, bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed);
+        Task<(IdentityTypeEnum, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed);
         
         Task<List<AuthenticationScheme>> Schemes();
         
@@ -22,7 +23,7 @@ namespace Compass.Security.Application.Commons.Interfaces
         
         Task<bool> ConfirmEmail(string userId, string token);
 
-        Task<bool> TwoFactor(string code);
+        Task<(IdentityTypeEnum, User)> TwoFactor(string code);
 
         Task<bool> ResetPassword(string userId, string token, string password);
 

@@ -9,7 +9,6 @@ namespace Compass.Security.Application.Services.Accounts.Commands.TwoFactor
         public TwoFactorValidator()
         {
             RuleFor(v => v.Id)
-                .MaximumLength(36)
                 .NotEmpty();
             
             RuleFor(d => d).Custom((d, c) =>

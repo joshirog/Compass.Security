@@ -9,6 +9,7 @@ using Compass.Security.Application.Commons.Interfaces;
 using Compass.Security.Domain.Enums;
 using Compass.Security.Domain.Entities;
 using Compass.Security.Domain.Exceptions;
+using Compass.Security.Infrastructure.Commons.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
@@ -27,33 +28,30 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             _userRepository = userRepository;
         }
         
-        public async Task<(bool, bool, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed)
+        public async Task<(IdentityTypeEnum, User)> SignIn(string username, string password, bool isPersistent, bool isLockOnFailed)
         {
-            var result = await _signInManager.PasswordSignInAsync(username, password, isPersistent, isLockOnFailed);
-            
-            if (result.IsNotAllowed)
-            {
-                throw new ErrorInvalidException(new []{ "We sent a verification email to activate your account, please check your email." });
-            }
-
-            if (result.IsLockedOut)
-            {
-                throw new ErrorInvalidException(new []{ "It seems that you have exceeded the maximum number of attempts, please try again later." });
-            }
-            
             var user = await _userManager.FindByNameAsync(username);
 
-            if (result.RequiresTwoFactor)
-            {
-                return (result.RequiresTwoFactor, result.RequiresTwoFactor, user);
-            }
-
-            if (!result.Succeeded)
-                throw new ErrorInvalidException(new[] { "Incorrect email or password, please check and try again." });
+            if (user is null)
+                return (IdentityTypeEnum.Failed, new User());
             
-            await _userManager.ResetAccessFailedCountAsync(user);
-                
-            return (result.Succeeded, result.RequiresTwoFactor, user);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, password, isPersistent, isLockOnFailed);
+            
+            if (result.IsNotAllowed)
+                return (IdentityTypeEnum.IsNotAllowed, user);
+            
+            if (result.IsLockedOut)
+                return (IdentityTypeEnum.IsLockedOut, user);
+            
+            if (result.RequiresTwoFactor)
+                return (IdentityTypeEnum.RequiresTwoFactor, user);
+            
+            if (result.IsLockedOut)
+                return (IdentityTypeEnum.IsLockedOut, user);
+            
+            return result.Succeeded ? 
+                (IdentityTypeEnum.Succeeded, user) : 
+                (IdentityTypeEnum.Failed, user);
         }
         
         public async Task<List<AuthenticationScheme>> Schemes()
@@ -133,9 +131,9 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             
                 await _userManager.AddClaimsAsync(user, new List<Claim>
                 {
-                    new("firstname", "firstname", ClaimValueTypes.String),
-                    new("lastname", "lastname", ClaimValueTypes.String),
-                    new("avatar", ConfigurationConstant.Avatar, ClaimValueTypes.String)
+                    new(ClaimTypeConstant.Firstname, ClaimTypeConstant.Firstname, ClaimValueTypes.String),
+                    new(ClaimTypeConstant.Lastname, ClaimTypeConstant.Lastname, ClaimValueTypes.String),
+                    new(ClaimTypeConstant.Avatar, ConfigurationConstant.Avatar, ClaimValueTypes.String)
                 });
             }
 
@@ -187,40 +185,39 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             throw new ErrorInvalidException(result.Errors?.Select(x => x.Description));
         }
         
-        public async Task<bool> TwoFactor(string code)
+        public async Task<(IdentityTypeEnum, User)> TwoFactor(string code)
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user is null)
+                return (IdentityTypeEnum.Failed, null);
             
-            if(user is null)
-                throw new ErrorInvalidException(new []{ "The code is incorrect, please check, or generate a new authentication code." });
+            var result = await _signInManager.TwoFactorSignInAsync(TwoFactorTypeConstant.ProviderEmail, code, true, false);
             
-            var result = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
-
-            if (result.IsNotAllowed)
-            {
-                throw new ErrorInvalidException(new []{ "We sent a verification email to activate your account, please check your email." });
-            }
-
-            if (result.IsLockedOut)
-            {
-                throw new ErrorInvalidException(new []{ "It seems that you have exceeded the maximum number of attempts, please try again later." });
-            }
-
-            if (result.RequiresTwoFactor)
-            {
-                throw new ErrorInvalidException(new []{ "Wrong token, please try again." });
-            }
-
             if (result.Succeeded)
             {
                 await _userManager.ResetAccessFailedCountAsync(user);
                 
                 await _userManager.UpdateSecurityStampAsync(user);
-                
-                return result.Succeeded;
+
+                return (IdentityTypeEnum.Succeeded, user);
             }
 
-            throw new ErrorInvalidException(new []{ "The code is incorrect, please check, or generate a new authentication code." });
+            if (result.IsNotAllowed)
+                return (IdentityTypeEnum.IsNotAllowed, user);
+            
+            if (result.IsLockedOut)
+                return (IdentityTypeEnum.IsLockedOut, user);
+            
+            if (result.RequiresTwoFactor)
+                return (IdentityTypeEnum.RequiresTwoFactor, user);
+            
+            if (result.IsLockedOut)
+                return (IdentityTypeEnum.IsLockedOut, user);
+            
+            return result.Succeeded ? 
+                (IdentityTypeEnum.Succeeded, user) : 
+                (IdentityTypeEnum.Failed, user);
         }
         
         public async Task<bool> ResetPassword(string userId, string token, string password)

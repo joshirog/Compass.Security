@@ -36,18 +36,16 @@ namespace Compass.Security.Web.Controllers.Web
         {
             var response = await Mediator.Send(command);
 
-            switch (response.Success)
+            TempData["message"] = response.Message;
+
+            return response.Success switch
             {
-                case true when response.Data.IsOtp:
-                    TempData["message"] = response.Message;
-                    return RedirectToAction(nameof(Otp), new { response.Data.Id, command.ReturnUrl });
-                case true when !string.IsNullOrEmpty(command.ReturnUrl):
-                    return Redirect(command.ReturnUrl);
-                case true:
-                    return RedirectToAction("Index", "Home");
-                default:
-                    return View(command);
-            }
+                true when response.Data.IsOtp => RedirectToAction(nameof(TwoStep),
+                    new { response.Data.Id, command.ReturnUrl }),
+                true when !string.IsNullOrEmpty(command.ReturnUrl) => Redirect(command.ReturnUrl),
+                true => RedirectToAction("Index", "Home"),
+                _ => View(command)
+            };
         }
         
         [HttpPost]
@@ -130,14 +128,14 @@ namespace Compass.Security.Web.Controllers.Web
         {
             if (string.IsNullOrEmpty(command.UserId))
             {
-                TempData["resend_msg"] = "";
+                TempData["message"] = "";
                 return View(command);
             }
             
             var response = await Mediator.Send(command);
             
             if(response.Success)
-                TempData["resend_msg"] = response.Message;
+                TempData["message"] = response.Message;
 
             return View(command);
         }
@@ -217,10 +215,10 @@ namespace Compass.Security.Web.Controllers.Web
         }
         
         [HttpGet]
-        public IActionResult Otp(string returnUrl)
+        public IActionResult TwoStep(string id, string returnUrl)
         {
             if (User.Identity is not {IsAuthenticated: true}) 
-                return View(null);
+                return View(nameof(TwoStep), new TwoFactorCommand { Id =  Guid.Parse(id), ReturnUrl = returnUrl });
             
             if (!string.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
@@ -237,7 +235,7 @@ namespace Compass.Security.Web.Controllers.Web
             
                 TempData["message"] = response.Message;
                 
-                return View(nameof(TwoStep), new TwoFactorCommand { Id =  id, ReturnUrl = returnUrl });
+                return View(nameof(TwoStep), new TwoFactorCommand { Id =  Guid.Parse(id), ReturnUrl = returnUrl });
             }
             
             if (!string.IsNullOrEmpty(returnUrl))
@@ -251,6 +249,8 @@ namespace Compass.Security.Web.Controllers.Web
         public async Task<IActionResult> TwoStep(TwoFactorCommand command)
         {
             var response = await Mediator.Send(command);
+            
+            TempData["message"] = response.Message;
             
             if (!response.Success) 
                 return View(command);

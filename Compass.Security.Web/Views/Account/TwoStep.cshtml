@@ -1,72 +1,128 @@
+@model Compass.Security.Application.Services.Accounts.Commands.TwoFactor.TwoFactorCommand
+
 @{
-    ViewBag.Title = "Two Step";
+  ViewBag.Title = "Two Step";
 }
 
-<form class="js-validate">
-  <div class="text-center">
-    <div class="mb-4">
-      <img class="avatar avatar-xxl avatar-4by3" src="~/svg/illustrations/unlock.svg" alt="Image Description">
-    </div>
-
-    <div class="mb-5">
-      <h1 class="display-4">2-step Verification</h1>
-
-      <p class="mb-0">We sent a verification code to your email.</p>
-
-      <p>Enter the code from the email in the field below.</p>
-    </div>
-
-    <div class="row gx-2 gx-sm-3">
-      <div class="col">
-        <!-- Form Group -->
-        <div class="form-group">
-          <input type="text" class="js-masked-input form-control form-control-single-number" name="code1" id="twoStepVerificationSrCodeInput1" placeholder="" aria-label="" maxlength="1" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus
-                 data-hs-mask-options='{
-                                 "template": "0"
-                               }'>
-        </div>
-        <!-- End Form Group -->
+<form class="js-validate" method="post" asp-controller="Account" asp-action="TwoStep">
+   <div class="text-center">
+      <div class="mb-4">
+         <img class="avatar avatar-xxl avatar-4by3" src="~/svg/illustrations/unlock.svg" alt="Image Description">
       </div>
-
-      <div class="col">
-        <!-- Form Group -->
-        <div class="form-group">
-          <input type="text" class="js-masked-input form-control form-control-single-number" name="code2" id="twoStepVerificationSrCodeInput2" placeholder="" aria-label="" maxlength="1" autocomplete="off" autocapitalize="off" spellcheck="false"
-                 data-hs-mask-options='{
-                                 "template": "0"
-                               }'>
-        </div>
-        <!-- End Form Group -->
+      <div class="mb-5">
+         <h1 class="display-4">2-step Verification</h1>
+         <p class="mb-0">We sent a verification code to your email.</p>
+         <p>Enter the code from the email in the field below.</p>
       </div>
-
-      <div class="col">
-        <!-- Form Group -->
-        <div class="form-group">
-          <input type="text" class="js-masked-input form-control form-control-single-number" name="code3" id="twoStepVerificationSrCodeInput3" placeholder="" aria-label="" maxlength="1" autocomplete="off" autocapitalize="off" spellcheck="false"
-                 data-hs-mask-options='{
-                                 "template": "0"
-                               }'>
-        </div>
-        <!-- End Form Group -->
+      
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      
+      @if (TempData["message"] != null)
+       {
+           <div class="form-group text-center">
+               <strong>@TempData["message"]</strong>
+               <br>
+           </div>
+       }
+      
+      <input type="hidden" asp-for="Id"/>
+      <input type="hidden" asp-for="ReturnUrl"/>
+      
+      <div class="row gx-2 gx-sm-3">
+         <div class="col">
+            <div class="form-group">
+               <input type="text"
+                      class="js-masked-input form-control form-control-single-number"
+                      asp-for="Code1"
+                      id="twoStepVerificationSrCodeInput1"
+                      placeholder=""
+                      aria-label=""
+                      maxlength="1"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false" autofocus
+                      data-hs-mask-options='{ "template": "0"}'>
+            </div>
+         </div>
+         <div class="col">
+            <div class="form-group">
+               <input type="text"
+                      class="js-masked-input form-control form-control-single-number"
+                      name="code2"
+                      asp-for="Code2"
+                      placeholder=""
+                      aria-label=""
+                      maxlength="1"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      data-hs-mask-options='{ "template": "0" }'>
+            </div>
+         </div>
+         <div class="col">
+            <div class="form-group">
+               <input type="text"
+                      class="js-masked-input form-control form-control-single-number"
+                      asp-for="Code3"
+                      id="twoStepVerificationSrCodeInput3"
+                      placeholder=""
+                      aria-label=""
+                      maxlength="1"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      data-hs-mask-options='{ "template": "0" }'>
+            </div>
+         </div>
+         <div class="col">
+            <div class="form-group">
+               <input type="text"
+                      class="js-masked-input form-control form-control-single-number"
+                      asp-for="Code4"
+                      id="twoStepVerificationSrCodeInput4"
+                      placeholder=""
+                      aria-label=""
+                      maxlength="1"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      data-hs-mask-options='{ "template": "0" }'>
+            </div>
+         </div>
+         <div class="col">
+            <div class="form-group">
+               <input type="text"
+                      class="js-masked-input form-control form-control-single-number"
+                      asp-for="Code5"
+                      id="twoStepVerificationSrCodeInput5"
+                      placeholder=""
+                      aria-label=""
+                      maxlength="1"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      data-hs-mask-options='{ "template": "0" }'>
+            </div>
+         </div>
+         <div class="col">
+            <div class="form-group">
+               <input type="text"
+                      class="js-masked-input form-control form-control-single-number"
+                      asp-for="Code6"
+                      id="twoStepVerificationSrCodeInput6"
+                      placeholder=""
+                      aria-label=""
+                      maxlength="1"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      data-hs-mask-options='{ "template": "0" }'>
+            </div>
+         </div>
       </div>
-
-      <div class="col">
-        <!-- Form Group -->
-        <div class="form-group">
-          <input type="text" class="js-masked-input form-control form-control-single-number" name="code4" id="twoStepVerificationSrCodeInput4" placeholder="" aria-label="" maxlength="1" autocomplete="off" autocapitalize="off" spellcheck="false"
-                 data-hs-mask-options='{
-                                 "template": "0"
-                               }'>
-        </div>
-        <!-- End Form Group -->
+      <button type="submit" class="btn btn-lg btn-block btn-primary">Verify my account</button>
+      <div class="text-center mt-3">
+         <p>Haven't received it? <a asp-controller="Account" asp-action="ResendOpt" asp-route-id="@Model.Id" asp-route-returnUrl="@Model.ReturnUrl">Resend a new code.</a></p>
       </div>
-    </div>
-
-    <button type="submit" class="btn btn-lg btn-block btn-primary">Verify my account</button>
-
-    <div class="text-center mt-3">
-      <p>Haven't received it? <a href="#">Resend a new code.</a></p>
-    </div>
-  </div>
+   </div>
 </form>
-

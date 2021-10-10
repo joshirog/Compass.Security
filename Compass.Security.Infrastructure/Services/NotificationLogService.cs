@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
 using Compass.Security.Domain.Entities;
@@ -35,8 +34,7 @@ namespace Compass.Security.Infrastructure.Services
             await _userNotificationRepository.UpdateAsync(userNotification);
                     
             var identifier = await _notificationService.SendEmail(email);
-            //var identifier = Guid.NewGuid().ToString();
-                
+
             var result = await _notificationLogRepository.InsertAsync(new NotificationLog
             {
                 UserId = userId,

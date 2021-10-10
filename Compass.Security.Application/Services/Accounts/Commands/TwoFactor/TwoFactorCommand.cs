@@ -1,3 +1,4 @@
+using System;
 using Compass.Security.Application.Commons.Dtos;
 using MediatR;
 
@@ -5,7 +6,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.TwoFactor
 {
     public class TwoFactorCommand: IRequest<ResponseDto<bool>>
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Code1 { get; set; }
         

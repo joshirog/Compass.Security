@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
 using AutoMapper;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Mapping;
-using Compass.Security.Application.Services.Accounts.Commands.SignUp;
 using Compass.Security.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
 {
-    public class SignInCommand : IRequest<ResponseDto<SignInCommand>>
+    public class SignInCommand : IRequest<ResponseDto<SignInCommand>>, IMapFrom<User>
     {
         public Guid Id { get; set; }
         
@@ -25,5 +22,11 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignIn
         public bool IsOtp { get; set; }
 
         public string ReturnUrl { get; set; }
+        
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<SignInCommand, User>()
+                .ReverseMap();
+        }
     }
 }
