@@ -1,4 +1,4 @@
-namespace Compass.Security.Infrastructure.Commons.Constants
+namespace Compass.Security.Application.Commons.Constants
 {
     public static class ClaimTypeConstant
     {

@@ -13,7 +13,7 @@
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    @if (TempData["message"] is not null && (string)TempData["message"] != "")
+    @if (TempData["message"] is not null)
     {
         <div class="form-group text-center">
             <strong>@TempData["message"]</strong>
@@ -30,15 +30,12 @@
         <a class="btn btn-primary btn-wide" asp-action="SignIn" asp-controller="Account">Skip now</a>
     </div>
     
-    @if (TempData["message"] is null)
-    {
-        <form method="post" asp-controller="Account" asp-action="Resend">
-            <input type="hidden" asp-for="UserId"/>
-            <input type="hidden" asp-for="ReturnUrl"/>
-            <p>
-                Didn't receive an email?
-                <a href="javascript:document.forms[0].submit()">Resend</a>
-            </p>
-        </form>
-    }
+    <form method="post" asp-controller="Account" asp-action="Resend">
+        <input type="hidden" asp-for="UserId"/>
+        <input type="hidden" asp-for="ReturnUrl"/>
+        <p>
+            Didn't receive an email?
+            <a href="javascript:document.forms[0].submit()">Resend</a>
+        </p>
+    </form>
 </div>

@@ -1,4 +1,5 @@
 using System;
+using Compass.Security.Application.Commons.Interfaces;
 using Compass.Security.Domain.Enums;
 using Compass.Security.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -15,8 +16,10 @@ namespace Compass.Security.Infrastructure.Persistences.Seeders
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+            
+            var userNotificationRepository = scope.ServiceProvider.GetRequiredService<IUserNotificationRepository>();
 
-            if (await userManager.FindByNameAsync("admin@monkey.com") is not null) 
+            if (await userManager.FindByNameAsync("admin@compass.com") is not null) 
                 return;
             
             var user = new User()
@@ -48,6 +51,19 @@ namespace Compass.Security.Infrastructure.Persistences.Seeders
             });
 
             await userManager.AddToRoleAsync(user, Enum.GetName(typeof(RoleEnum), RoleEnum.Administrator));
+            
+            foreach (var type in (NotificationTypeEnum[]) Enum.GetValues(typeof(NotificationTypeEnum)))
+            {
+                if (!type.Equals(NotificationTypeEnum.None))
+                {
+                    await userNotificationRepository.InsertAsync(new UserNotification
+                    {
+                        UserId = user.Id,
+                        Type = type,
+                        Counter = 0,
+                    });
+                }
+            }
         }
     }
 }

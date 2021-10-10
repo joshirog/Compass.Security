@@ -36,6 +36,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.LazyCache
                     nameof(ConfigurationConstant.TemplatePassword) => web.DownloadString(ConfigurationConstant.TemplatePassword),
                     nameof(ConfigurationConstant.TemplateOtp) => web.DownloadString(ConfigurationConstant.TemplateOtp),
                     nameof(ConfigurationConstant.TemplateReset) => web.DownloadString(ConfigurationConstant.TemplateReset),
+                    nameof(ConfigurationConstant.TemplateLocked) => web.DownloadString(ConfigurationConstant.TemplateLocked),
                     _ => null
                 };
             });

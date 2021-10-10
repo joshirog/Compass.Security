@@ -24,15 +24,13 @@ namespace Compass.Security.Infrastructure.Persistences.Configurations
                 .HasColumnName("user_id")
                 .IsRequired();
             
-            builder.Property(x => x.SmsCounter)
-                .HasColumnName("sms_counter")
-                .IsRequired()
-                .HasMaxLength(10);
+            builder.Property(x => x.Type)
+                .HasColumnName("type")
+                .IsRequired();
             
-            builder.Property(x => x.EmailCounter)
-                .HasColumnName("email_counter")
-                .IsRequired()
-                .HasMaxLength(50);
+            builder.Property(x => x.Counter)
+                .HasColumnName("counter")
+                .IsRequired();
 
             builder.Property(x => x.CreatedAt)
                 .HasColumnName("created_at")

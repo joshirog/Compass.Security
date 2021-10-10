@@ -47,6 +47,7 @@ namespace Compass.Security.Application.Commons.Constants
         public static string TemplateReset { get; set; }
         public static string TemplatePassword { get; set; }
         public static string TemplateOtp { get; set; }
+        public static string TemplateLocked { get; set; }
         #endregion
 
         public static void LoadSetting(IConfiguration configuration)
@@ -68,6 +69,7 @@ namespace Compass.Security.Application.Commons.Constants
                 TemplateReset = configuration.GetSection("Templates:Reset").Value;
                 TemplatePassword = configuration.GetSection("Templates:Password").Value;
                 TemplateOtp = configuration.GetSection("Templates:Otp").Value;
+                TemplateLocked = configuration.GetSection("Templates:Locked").Value;
                 GoogleCaptchaUrl = configuration.GetSection("GoogleCaptcha:Endpoint").Value;
                 GoogleCaptchaKey = configuration.GetSection("GoogleCaptcha:Key").Value;
                 GoogleCaptchaSecret = configuration.GetSection("GoogleCaptcha:Secret").Value;
@@ -87,6 +89,7 @@ namespace Compass.Security.Application.Commons.Constants
                 TemplateReset = Environment.GetEnvironmentVariable("TEMPLATE_RESET");
                 TemplatePassword = Environment.GetEnvironmentVariable("TEMPLATE_PASSWORD");
                 TemplateOtp = Environment.GetEnvironmentVariable("TEMPLATE_OTP");
+                TemplateLocked = Environment.GetEnvironmentVariable("TEMPLATE_LOCKED");
                 GoogleCaptchaUrl = Environment.GetEnvironmentVariable("G_CAPTCHA_ENDPOINT");
                 GoogleCaptchaKey = Environment.GetEnvironmentVariable("G_CAPTCHA_KEY");
                 GoogleCaptchaSecret = Environment.GetEnvironmentVariable("G_CAPTCHA_SECRET");
@@ -105,6 +108,7 @@ namespace Compass.Security.Application.Commons.Constants
             Console.WriteLine($"TemplateReset: {TemplateReset}");
             Console.WriteLine($"TemplatePassword : {TemplatePassword}");
             Console.WriteLine($"TemplateOtp : {TemplateOtp}");
+            Console.WriteLine($"TemplateOtp : {TemplateLocked}");
             Console.WriteLine($"GoogleCaptchaKey : {GoogleCaptchaKey}");
             Console.WriteLine($"GoogleCaptchaSecret : {GoogleCaptchaSecret}");
             Console.WriteLine($"GoogleAuthKey : {GoogleAuthKey}");

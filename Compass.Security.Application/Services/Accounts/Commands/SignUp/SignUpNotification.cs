@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
+using Compass.Security.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -41,7 +42,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
 
             if (!string.IsNullOrEmpty(user.Email))
             {
-                var fullName = claims.Where(x => x.Type.Equals("First")).Select(x => x.Value).FirstOrDefault();
+                var firstname = claims.Where(x => x.Type.Equals(ClaimTypeConstant.Firstname)).Select(x => x.Value).FirstOrDefault();
 
                 var token = await _identityService.TokenConfirm(user);
                 var tokenEncodedBytes = Encoding.UTF8.GetBytes(token);
@@ -52,17 +53,17 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
                 Console.WriteLine(link);
 
                 var html = _cacheService.Template(TemplateConstant.TemplateActivation);
-                html = html.Replace("{0}", fullName);
+                html = html.Replace("{0}", firstname);
                 html = html.Replace("{1}", link);
 
                 await _notificationLogService.SendMailLog(user.Id, new EmailDto
                 {
                     Sender = new SenderDto { Id = TemplateConstant.SenderId },
-                    To = new List<ToDto> { new() { Name = fullName, Email = user.Email } },
+                    To = new List<ToDto> { new() { Name = firstname, Email = user.Email } },
                     Subject = TemplateConstant.SubjectActivateAccount,
                     HtmlContent = html,
                     TextContent = TemplateConstant.SubjectActivateAccount
-                });
+                }, NotificationTypeEnum.Resend);
             }
         }
     }

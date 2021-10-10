@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
+using Compass.Security.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
@@ -39,7 +40,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Otp
         {
             var user = await _userRepository.GetByIdAsync(notification.UserId);
             var claims = await _identityService.GetClaims(user);
-            var fullName = claims.Where(x => x.Type.Equals("FullName")).Select(x => x.Value).FirstOrDefault();
+            var firstname = claims.Where(x => x.Type.Equals(ClaimTypeConstant.Firstname)).Select(x => x.Value).FirstOrDefault();
 
             var code = await _identityService.TokenTwoFactor(user, "Email");
 
@@ -54,11 +55,11 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Otp
             await _notificationLogService.SendMailLog(user.Id, new EmailDto
             {
                 Sender = new SenderDto { Id = TemplateConstant.SenderId },
-                To = new List<ToDto> { new() { Name = fullName, Email = user.Email } },
+                To = new List<ToDto> { new() { Name = firstname, Email = user.Email } },
                 Subject = TemplateConstant.SubjectTwoFactor,
                 HtmlContent = html,
                 TextContent = TemplateConstant.SubjectTwoFactor
-            });
+            }, NotificationTypeEnum.TwoFactor);
         }
     }
 }

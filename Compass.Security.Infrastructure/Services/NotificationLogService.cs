@@ -21,18 +21,19 @@ namespace Compass.Security.Infrastructure.Services
             _notificationService = notificationService;
         }
         
-        public async Task<bool> SendMailLog(Guid userId, EmailDto email)
+        public async Task<bool> SendMailLog(Guid userId, EmailDto email, NotificationTypeEnum type)
         {
-            if (string.IsNullOrEmpty(email.HtmlContent))
+            if (!type.Equals(NotificationTypeEnum.None))
             {
-                throw new ErrorInvalidException(new []{ "It is not possible to send the notification, we cannot load the template, please try in a few minutes" });
+                var userNotification = await _userNotificationRepository.GetFilterAsync(x => 
+                    x.UserId.Equals(userId) &&
+                    x.Type.Equals(type));
+            
+                userNotification.Counter += 1;
+
+                await _userNotificationRepository.UpdateAsync(userNotification);
             }
-
-            var userNotification = await _userNotificationRepository.GetFilterAsync(x => x.UserId.Equals(userId));
-            userNotification.EmailCounter += 1;
-
-            await _userNotificationRepository.UpdateAsync(userNotification);
-                    
+            
             var identifier = await _notificationService.SendEmail(email);
 
             var result = await _notificationLogRepository.InsertAsync(new NotificationLog

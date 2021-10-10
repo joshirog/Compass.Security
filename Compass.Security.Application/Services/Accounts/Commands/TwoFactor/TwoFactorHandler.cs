@@ -13,11 +13,13 @@ namespace Compass.Security.Application.Services.Accounts.Commands.TwoFactor
     {
         private readonly IIdentityService _identityService;
         private readonly IMediator _mediator;
+        private readonly IUserNotificationRepository _userNotificationRepository;
         
-        public TwoFactorHandler(IIdentityService identityService, IMediator mediator)
+        public TwoFactorHandler(IIdentityService identityService, IMediator mediator, IUserNotificationRepository userNotificationRepository)
         {
             _identityService = identityService;
             _mediator = mediator;
+            _userNotificationRepository = userNotificationRepository;
         }
         
         public async Task<ResponseDto<bool>> Handle(TwoFactorCommand request, CancellationToken cancellationToken)
@@ -31,16 +33,20 @@ namespace Compass.Security.Application.Services.Accounts.Commands.TwoFactor
                 case IdentityTypeEnum.Succeeded:
                     return ResponseDto.Ok(ResponseConstant.MessageSuccess, true);
                 case IdentityTypeEnum.IsNotAllowed:
-                    return ResponseDto.Fail("We sent a verification email to activate your account, please check your email.", false);
+                    return ResponseDto.Fail(ResponseConstant.MessageConfirm, false);
                 case IdentityTypeEnum.IsLockedOut:
-                    await _mediator.Publish(new SignInNotification() { Username = user.UserName }, cancellationToken);
-                    return ResponseDto.Fail("It seems that you have exceeded the maximum number of attempts, please try again later.", false);
+                    var notification = await _userNotificationRepository.GetFilterAsync(x =>
+                        x.UserId.Equals(user.Id) &&
+                        x.Type.Equals(NotificationTypeEnum.Locked));
+                    if (notification.Counter < ConfigurationConstant.UserMaxEmail)
+                        await _mediator.Publish(new SignInNotification() { Username = user.UserName }, cancellationToken);
+                    return ResponseDto.Fail(ResponseConstant.MessageLockedAccount, false);
                 case IdentityTypeEnum.RequiresTwoFactor:
-                    return ResponseDto.Fail("Wrong token, please try again.", false);
+                    return ResponseDto.Fail(ResponseConstant.MessageTwoFactorError, false);
                 case IdentityTypeEnum.Failed:
-                    return ResponseDto.Fail("The code is incorrect, please check, or generate a new authentication code.", false);
+                    return ResponseDto.Fail(ResponseConstant.MessageTwoFactorFail, false);
                 default:
-                    return ResponseDto.Fail("The code is incorrect, please check, or generate a new authentication code.", false);
+                    return ResponseDto.Fail(ResponseConstant.MessageTwoFactorFail, false);
             }
         }
     }

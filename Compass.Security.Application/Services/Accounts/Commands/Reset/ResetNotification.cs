@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
+using Compass.Security.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
@@ -38,7 +39,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Reset
             var user = await _userRepository.GetByIdAsync(new Guid(notification.UserId));
 
             var claims = await _identityService.GetClaims(user);
-            var fullName = claims.Where(x => x.Type.Equals("FullName")).Select(x => x.Value).FirstOrDefault();
+            var firstname = claims.Where(x => x.Type.Equals(ClaimTypeConstant.Firstname)).Select(x => x.Value).FirstOrDefault();
             
             var link = $"{_accessor.HttpContext?.Request.Scheme}://{_accessor.HttpContext?.Request.Host}";
             
@@ -48,11 +49,11 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Reset
             await _notificationLogService.SendMailLog(user.Id ,new EmailDto
             {
                 Sender = new SenderDto { Id = TemplateConstant.SenderId },
-                To = new List<ToDto> { new() { Name = fullName, Email = user.Email } },
+                To = new List<ToDto> { new() { Name = firstname, Email = user.Email } },
                 Subject = TemplateConstant.SubjectReset,
                 HtmlContent = html,
                 TextContent = TemplateConstant.SubjectReset,
-            });
+            }, NotificationTypeEnum.Reset);
         }
     }
 }

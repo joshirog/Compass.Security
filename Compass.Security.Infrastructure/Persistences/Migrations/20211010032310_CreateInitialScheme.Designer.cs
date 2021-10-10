@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Compass.Security.Infrastructure.Persistences.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211008003859_CreateUserConfigurationTable")]
-    partial class CreateUserConfigurationTable
+    [Migration("20211010032310_CreateInitialScheme")]
+    partial class CreateInitialScheme
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -336,7 +336,7 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("647da967-883d-4de5-bfa0-eb3621e208b1"),
+                            Id = new Guid("2eb40b43-4b5c-4a6a-91b9-828322b89f36"),
                             CreatedAt = new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = "migrations",
                             Status = "Active",
@@ -360,8 +360,7 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
 
                     b.Property<string>("Identifier")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("text")
                         .HasColumnName("identifier");
 
                     b.Property<string>("Type")
@@ -634,19 +633,17 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
+                    b.Property<int>("Counter")
+                        .HasColumnType("integer")
+                        .HasColumnName("counter");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("EmailCounter")
-                        .HasMaxLength(50)
+                    b.Property<int>("Type")
                         .HasColumnType("integer")
-                        .HasColumnName("email_counter");
-
-                    b.Property<int>("SmsCounter")
-                        .HasMaxLength(10)
-                        .HasColumnType("integer")
-                        .HasColumnName("sms_counter");
+                        .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")

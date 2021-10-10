@@ -172,6 +172,27 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "notification_logs",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    type = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    identifier = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_notification_logs", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_notification_logs_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "user_claims",
                 columns: table => new
                 {
@@ -206,6 +227,28 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     table.PrimaryKey("PK_user_logins", x => new { x.login_provider, x.provider_key });
                     table.ForeignKey(
                         name: "FK_user_logins_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "user_notifications",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", maxLength: 36, nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    counter = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user_notifications", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_user_notifications_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "Id",
@@ -294,7 +337,7 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
             migrationBuilder.InsertData(
                 table: "blacklists",
                 columns: new[] { "id", "created_at", "created_by", "status", "type", "updated_at", "updated_by", "Value" },
-                values: new object[] { new Guid("723bc55b-d08e-45a0-b815-ae7b8afb5224"), new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "migrations", "Active", "Password", null, null, "12345678" });
+                values: new object[] { new Guid("2eb40b43-4b5c-4a6a-91b9-828322b89f36"), new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "migrations", "Active", "Password", null, null, "Secret2020$$" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_application_authorizations_application_id_status_subject_ty~",
@@ -330,6 +373,11 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_notification_logs_user_id",
+                table: "notification_logs",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_role_claims_role_id",
                 table: "role_claims",
                 column: "role_id");
@@ -348,6 +396,11 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_user_logins_user_id",
                 table: "user_logins",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_user_notifications_user_id",
+                table: "user_notifications",
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
@@ -379,6 +432,9 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                 name: "blacklists");
 
             migrationBuilder.DropTable(
+                name: "notification_logs");
+
+            migrationBuilder.DropTable(
                 name: "role_claims");
 
             migrationBuilder.DropTable(
@@ -386,6 +442,9 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
 
             migrationBuilder.DropTable(
                 name: "user_logins");
+
+            migrationBuilder.DropTable(
+                name: "user_notifications");
 
             migrationBuilder.DropTable(
                 name: "user_roles");

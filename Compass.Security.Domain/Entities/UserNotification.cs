@@ -1,4 +1,5 @@
 using System;
+using Compass.Security.Domain.Enums;
 using Compass.Security.Domain.Interfaces;
 
 namespace Compass.Security.Domain.Entities
@@ -9,9 +10,9 @@ namespace Compass.Security.Domain.Entities
 
         public Guid UserId { get; set; }
 
-        public int SmsCounter { get; set; }
+        public NotificationTypeEnum Type { get; set; }
 
-        public int EmailCounter { get; set; }
+        public int Counter { get; set; }
         
         public string Status { get; set; }
         

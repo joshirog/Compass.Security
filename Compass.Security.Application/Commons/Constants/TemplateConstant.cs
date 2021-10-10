@@ -7,6 +7,7 @@ namespace Compass.Security.Application.Commons.Constants
         public const string TemplateReset = "TemplateReset";
         public const string TemplatePassword = "TemplatePassword";
         public const string TemplateOtp = "TemplateOtp";
+        public const string TemplateLocked = "TemplateLocked";
 
         public const int SenderId = 1;
 

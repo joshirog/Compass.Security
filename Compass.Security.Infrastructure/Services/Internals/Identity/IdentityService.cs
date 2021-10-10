@@ -69,10 +69,8 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
              var info = await _signInManager.GetExternalLoginInfoAsync();
 
             if (info == null)
-            {
-                throw new ErrorInvalidException(new []{ "Oops, an error occurred in the communication with the external provider, please try it in a few minutes." });
-            }
-
+                return false;
+            
             var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
 
             if (signInResult.Succeeded)
@@ -82,11 +80,11 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var identifier = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            var firstname = info.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var lastname = info.Principal.FindFirstValue(ClaimTypes.Surname);
 
             if (email is null && identifier is null)
-            {
-                throw new ErrorInvalidException(new []{ "Oops, an error occurred in the communication with the external provider, please try it in a few minutes." });
-            }
+                return false;
 
             User user;
             var isCreated = false;
@@ -131,8 +129,8 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             
                 await _userManager.AddClaimsAsync(user, new List<Claim>
                 {
-                    new(ClaimTypeConstant.Firstname, ClaimTypeConstant.Firstname, ClaimValueTypes.String),
-                    new(ClaimTypeConstant.Lastname, ClaimTypeConstant.Lastname, ClaimValueTypes.String),
+                    new(ClaimTypeConstant.Firstname, firstname, ClaimValueTypes.String),
+                    new(ClaimTypeConstant.Lastname, lastname, ClaimValueTypes.String),
                     new(ClaimTypeConstant.Avatar, ConfigurationConstant.Avatar, ClaimValueTypes.String)
                 });
             }

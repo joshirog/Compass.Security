@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
+using Compass.Security.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -36,9 +37,11 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Recovery
             if(user is null)
                 return ResponseDto.Fail("We have sent the email instructions to follow and recover the password.", false);
 
-            var maximun = await _userNotificationRepository.GetFilterAsync(x => x.UserId.Equals(user.Id));
+            var notification = await _userNotificationRepository.GetFilterAsync(x => 
+                x.UserId.Equals(user.Id) &&
+                x.Type.Equals(NotificationTypeEnum.Reset));
             
-            if(maximun.EmailCounter > ConfigurationConstant.UserMaxEmail)
+            if(notification.Counter > ConfigurationConstant.UserMaxEmail)
                 return ResponseDto.Fail("You have exceeded the maximum number of daily notifications, please try again later.", false);
             
             var claims = await _identityService.GetClaims(user);
@@ -61,7 +64,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Recovery
                 Callback = callback
             }, cancellationToken);
     
-            return ResponseDto.Ok("We have sent the email instructions to follow and recover the password.", true);
+            return ResponseDto.Ok(ResponseConstant.MessageChangePassword, true);
         }
     }
 }

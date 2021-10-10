@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
@@ -7,6 +8,7 @@ using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
 using Compass.Security.Domain.Entities;
+using Compass.Security.Domain.Enums;
 using MediatR;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
@@ -35,13 +37,20 @@ namespace Compass.Security.Application.Services.Accounts.Commands.SignUp
                 new("avatar", ConfigurationConstant.Avatar, ClaimValueTypes.String)
             });
 
-            await _userNotificationRepository.InsertAsync(new UserNotification
-            {
-                UserId = user.Id,
-                EmailCounter = 0,
-                SmsCounter = 0,
-            });
             
+            foreach (var type in (NotificationTypeEnum[]) Enum.GetValues(typeof(NotificationTypeEnum)))
+            {
+                if (!type.Equals(NotificationTypeEnum.None))
+                {
+                    await _userNotificationRepository.InsertAsync(new UserNotification
+                    {
+                        UserId = user.Id,
+                        Type = type,
+                        Counter = 0,
+                    });
+                }
+            }
+
             if (isSuccess)
                 await _mediator.Publish(new SignUpNotification{ UserName = user.UserName }, cancellationToken);
 

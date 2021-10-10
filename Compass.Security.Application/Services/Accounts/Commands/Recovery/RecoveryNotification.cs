@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Compass.Security.Application.Commons.Constants;
 using Compass.Security.Application.Commons.Dtos;
 using Compass.Security.Application.Commons.Interfaces;
+using Compass.Security.Domain.Enums;
 using MediatR;
 
 namespace Compass.Security.Application.Services.Accounts.Commands.Recovery
@@ -43,7 +44,7 @@ namespace Compass.Security.Application.Services.Accounts.Commands.Recovery
                 Subject = TemplateConstant.SubjectRecovery,
                 HtmlContent = html,
                 TextContent = TemplateConstant.SubjectRecovery
-            });
+            }, NotificationTypeEnum.Resend);
         }
     }
 }
