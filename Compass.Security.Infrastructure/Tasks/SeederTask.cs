@@ -15,7 +15,8 @@ namespace Compass.Security.Infrastructure.Tasks
         public Task StartAsync(CancellationToken cancellationToken)
         {
             IdentitySeeder.Seed(_serviceProvider);
-
+            OpenIdSeeder.Seed(_serviceProvider);
+            
             return Task.CompletedTask;
         }
 
