@@ -82,6 +82,11 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
             var identifier = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
             var firstname = info.Principal.FindFirstValue(ClaimTypes.GivenName);
             var lastname = info.Principal.FindFirstValue(ClaimTypes.Surname);
+            
+            Console.WriteLine($"Callback email : {email}");
+            Console.WriteLine($"Callback identifier : {identifier}");
+            Console.WriteLine($"Callback firstname : {firstname}");
+            Console.WriteLine($"Callback lastname : {lastname}");
 
             if (email is null && identifier is null)
                 return (false, null);
@@ -103,6 +108,7 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
                         EmailConfirmed = true,
                         Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
                     };
+                    Console.WriteLine($"Callback user flag created email : {email}");
                 }
             }
             else
@@ -118,6 +124,8 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
                         EmailConfirmed = true,
                         Status = Enum.GetName(typeof(StatusEnum), StatusEnum.Active)
                     };
+                    
+                    Console.WriteLine($"Callback user flag created identifier : {identifier}");
                 }
             }
 
@@ -133,6 +141,8 @@ namespace Compass.Security.Infrastructure.Services.Internals.Identity
                     new(ClaimTypeConstant.Lastname, lastname, ClaimValueTypes.String),
                     new(ClaimTypeConstant.Avatar, ConfigurationConstant.Avatar, ClaimValueTypes.String)
                 });
+                
+                Console.WriteLine($"Callback user created !!! : {identifier}");
             }
 
             var identity = await _userManager.AddLoginAsync(user, info);
