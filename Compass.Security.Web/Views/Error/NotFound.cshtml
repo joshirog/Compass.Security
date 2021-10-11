@@ -1,0 +1,36 @@
+@{
+    Layout = null;
+    ViewBag.Title = "Not Found";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - Compass</title>
+    <link rel="shortcut icon" href="./favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/vendor/icon-set/style.css">
+    <link rel="stylesheet" href="~/css/theme.min.css">
+  </head>
+
+  <body class="has-navbar-vertical-aside navbar-vertical-aside-show-xl   footer-offset">
+    <main id="content" role="main" class="main">
+      <div class="content container-fluid">
+        <div class="row align-items-sm-center py-sm-10">
+          <div class="col-sm-6">
+            <div class="text-center mr-sm-4 mb-5 mb-sm-0">
+              <img class="w-60 w-sm-100 mx-auto" src="~/svg/illustrations/think.svg" alt="Image Description" style="max-width: 15rem;">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-4 text-center text-sm-left">
+            <h1 class="display-1 mb-0">404</h1>
+             <p class="lead">@ViewBag.ErrorMessage</p>
+            <a class="btn btn-primary" asp-controller="Account" asp-action="SignIn">Go back to the App</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

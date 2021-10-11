@@ -17,7 +17,7 @@ namespace Compass.Security.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((_, configuration) =>
                 {
-                    SettingConstant.LoadSetting(configuration.Build());
+                    ConfigurationConstant.LoadSetting(configuration.Build());
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

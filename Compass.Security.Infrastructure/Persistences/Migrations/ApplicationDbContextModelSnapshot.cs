@@ -284,6 +284,100 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     b.ToTable("application_tokens");
                 });
 
+            modelBuilder.Entity("Compass.Security.Domain.Entities.Blacklist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("updated_by");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("blacklists");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("568fdcf4-43ff-419c-8f49-4d44a6cd34f9"),
+                            CreatedAt = new DateTime(2012, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "migrations",
+                            Status = "Active",
+                            Type = "Password",
+                            Value = "Secret2020$$"
+                        });
+                });
+
+            modelBuilder.Entity("Compass.Security.Domain.Entities.NotificationLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Identifier")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("identifier");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("type");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("notification_logs");
+                });
+
             modelBuilder.Entity("Compass.Security.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -528,6 +622,44 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     b.ToTable("user_logins");
                 });
 
+            modelBuilder.Entity("Compass.Security.Domain.Entities.UserNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<int>("Counter")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("counter");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("user_notifications");
+                });
+
             modelBuilder.Entity("Compass.Security.Domain.Entities.UserRole", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -592,6 +724,17 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                     b.Navigation("Authorization");
                 });
 
+            modelBuilder.Entity("Compass.Security.Domain.Entities.NotificationLog", b =>
+                {
+                    b.HasOne("Compass.Security.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Compass.Security.Domain.Entities.RoleClaim", b =>
                 {
                     b.HasOne("Compass.Security.Domain.Entities.Role", null)
@@ -617,6 +760,17 @@ namespace Compass.Security.Infrastructure.Persistences.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Compass.Security.Domain.Entities.UserNotification", b =>
+                {
+                    b.HasOne("Compass.Security.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Compass.Security.Domain.Entities.UserRole", b =>

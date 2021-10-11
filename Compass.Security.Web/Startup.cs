@@ -1,6 +1,8 @@
-using Compass.Security.Infrastructure.Commons.Extensions;
+using Compass.Security.Application;
+using Compass.Security.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,16 +20,11 @@ namespace Compass.Security.Web
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
-                .AddRazorRuntimeCompilation();
+            services.AddInfrastructure();
+            
+            services.AddApplication();
 
-            services.AddConnectionExtension();
-
-            services.AddIdentityExtension();
-
-            services.AddInjectionExtension();
-
-            services.AddTaskExtension();
+            services.AddPresentation();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,19 +32,28 @@ namespace Compass.Security.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseHttpsRedirection();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
                 app.UseHsts();
             }
-
-            app.UseHttpsRedirection();
+            
+            var options = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+            app.UseForwardedHeaders(options);
             
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

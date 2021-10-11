@@ -1,55 +1,104 @@
+@using Compass.Security.Application.Commons.Constants
+@model Compass.Security.Application.Services.Accounts.Commands.SignIn.SignInCommand
+@inject Compass.Security.Application.Commons.Interfaces.ICacheService _cacheService
+
 @{
-   ViewBag.Title = "Sign In";
+    ViewBag.Title = "Sign In";
 }
 
-<form class="js-validate">
-   <div class="text-center mb-5">
-      <h1 class="display-4">Sign in</h1>
-      <p>Don't have an account yet? <a asp-action="SignUp" asp-controller="Account">Sign up here</a></p>
-   </div>
-   <div class="mb-4">
-      <a class="btn btn-lg btn-white btn-block" href="#">
-      <span class="d-flex justify-content-center align-items-center">
-      <img class="avatar avatar-xss mr-2" src="~/svg/brands/google.svg" alt="Image Description">
-      Sign up with Google
-      </span>
-      </a>
-   </div>
-   <div class="text-center mb-4">
-      <span class="divider text-muted">OR</span>
-   </div>
-   <div class="js-form-message form-group">
-      <label class="input-label" for="signupSrEmail">Your email</label>
-      <input type="email" class="form-control form-control-lg" name="email" id="signupSrEmail" placeholder="Markwilliams@example.com" aria-label="Markwilliams@example.com" required data-msg="Please enter a valid email address.">
-   </div>
-   <div class="js-form-message form-group">
-      <label class="input-label" for="signupSrPassword" tabindex="0">
-      <span class="d-flex justify-content-between align-items-center">
-      Password
-      <a class="input-label-secondary" asp-action="Recovery" asp-controller="Account">Forgot Password?</a>
-      </span>
-      </label>
-      <div class="input-group input-group-merge">
-         <input type="password" class="js-toggle-password form-control form-control-lg" name="password" id="signupSrPassword" placeholder="8+ characters required" aria-label="8+ characters required" required
-            data-msg="Your password is invalid. Please try again."
-            data-hs-toggle-password-options='{
+<form method="post" asp-controller="Account" asp-action="ExternalLogin">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Sign in</h1>
+        <p>Don't have an account yet? <a asp-action="SignUp" asp-controller="Account">Sign up here</a></p>
+    </div>
+    <div class="mb-4">
+        @foreach (var scheme in await _cacheService.ExternalLogin())
+        {
+            <button class="btn btn-lg btn-white btn-block" type="submit" name="provider" value="@scheme.Name">
+                <span class="d-flex justify-content-center align-items-center">
+                    <img class="avatar avatar-xss mr-2" src="~/svg/brands/google.svg" alt="Image Description">
+                    Sign in with @scheme.DisplayName
+                </span>
+            </button>
+        }
+    </div>
+</form>
+
+<form id="loginForm" class="js-validate" method="post" asp-controller="Account" asp-action="SignIn">
+    <div class="text-center mb-4">
+        <span class="divider text-muted">OR</span>
+    </div>
+    
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (TempData["message"] != null)
+    {
+        <div class="form-group text-center">
+            <strong>@TempData["message"]</strong>
+            <br>
+        </div>
+    }
+
+    <input type="hidden" asp-for="ReturnUrl"/>
+    <input type="hidden" asp-for="Captcha"/>
+    
+    <div class="js-form-message form-group">
+        <label class="input-label">Your email</label>
+        <input 
+            type="email" 
+            class="form-control form-control-lg" 
+            asp-for="Username"
+            placeholder="Markwilliams@example.com" 
+            aria-label="Markwilliams@example.com" 
+            required data-msg="Please enter a valid email address.">
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="js-form-message form-group">
+        <label class="input-label" for="signupSrPassword" tabindex="0">
+            <span class="d-flex justify-content-between align-items-center">
+                Password
+                <a class="input-label-secondary" asp-action="Recovery" asp-controller="Account">Forgot Password?</a>
+            </span>
+        </label>
+        <div class="input-group input-group-merge">
+            <input 
+                type="password" 
+                class="js-toggle-password form-control form-control-lg" 
+                name="password" id="signupSrPassword" 
+                placeholder="8+ characters required" 
+                aria-label="8+ characters required" required
+                data-msg="Your password is invalid. Please try again."
+                data-hs-toggle-password-options='{
             "target": "#changePassTarget",
             "defaultClass": "tio-hidden-outlined",
             "showClass": "tio-visible-outlined",
             "classChangeTarget": "#changePassIcon"
             }'>
-         <div id="changePassTarget" class="input-group-append">
-            <a class="input-group-text" href="javascript:;">
-            <i id="changePassIcon" class="tio-visible-outlined"></i>
-            </a>
-         </div>
-      </div>
-   </div>
-   <div class="form-group">
-      <div class="custom-control custom-checkbox">
-         <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="termsCheckbox">
-         <label class="custom-control-label text-muted" for="termsCheckbox"> Remember me</label>
-      </div>
-   </div>
-   <button type="submit" class="btn btn-lg btn-block btn-primary">Sign in</button>
+            <div id="changePassTarget" class="input-group-append">
+                <a class="input-group-text" href="javascript:">
+                    <i id="changePassIcon" class="tio-visible-outlined"></i>
+                </a>
+            </div>
+        </div>
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" asp-for="RememberMe" name="termsCheckbox">
+            <label class="custom-control-label text-muted"> Remember me</label>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-block btn-primary g-recaptcha"
+            data-sitekey="@ConfigurationConstant.GoogleCaptchaKey" 
+            data-callback="onSubmit" 
+            data-action="submit">Sign in</button>
 </form>
+
+@section Scripts{
+    <script>
+       function onSubmit(token) {
+           $("#Captcha").val(token);
+           document.getElementById("loginForm").submit();
+       }
+    </script>
+}

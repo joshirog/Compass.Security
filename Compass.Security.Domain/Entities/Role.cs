@@ -1,5 +1,5 @@
 using System;
-using Compass.Security.Domain.Commons.Interfaces;
+using Compass.Security.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace Compass.Security.Domain.Entities
